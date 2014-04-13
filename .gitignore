@@ -26,3 +26,5 @@ node_modules
 
 # DS_Store on Mac OS X
 .DS_Store
+
+*.swp
