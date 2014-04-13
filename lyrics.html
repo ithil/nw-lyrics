@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lyrics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="topbar" style="display:none">
+        <!--
+        <div id="title"></div>
+        <div id="artist"></div>
+        !-->
+        <div class="ribbon">
+            <div class="ribbon-stitches-top"></div>
+              <strong class="ribbon-content">
+                <h1 id="title"></h1>
+              </strong>
+              <div class="ribbon-stitches-bottom"></div>
+        </div>
+        <div class="ribbon2">
+            <div class="ribbon-stitches-top"></div>
+              <strong class="ribbon-content2">
+                <h1 id="artist"></h1>
+              </strong>
+              <div class="ribbon-stitches-bottom"></div>
+            </div>
+    </div>
+    <div id="lyrics">
+    
+    </div>
+
+    <div id="search" style="display:none">
+        <input placeholder="Artist" accesskey="a" id="searchArtist" tabindex="1" autocomplete="off">
+        </br>
+        <input placeholder="Title" accesskey="a" id="searchTitle" tabindex="2" autocomplete="off">
+    </div>
+    <script src="./lyrics.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "min_lyrics",
+  "description": "Lyrics.",
+  "version": "0.0.1",
+  "main": "./lyrics.html",
+  "window": {
+    "show": true,
+    "toolbar": false,
+    "frame": true,
+    "position": "center",
+    "width": 400,
+    "height": 500,
+    "min_width": 220,
+    "min_height": 220
+  }
+}
