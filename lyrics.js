@@ -1,9 +1,17 @@
-var request = require('request')
-var cheerio = require('cheerio')
-var exec = require('child_process').exec
-var fs = require('fs')
+var request = require('request');
+var cheerio = require('cheerio');
+var exec = require('child_process').exec;
+var fs = require('fs');
+var gui = require('nw.gui');
+var win = gui.Window.get();
+var app = gui.App;
 
-var lyrics_dir = process.env['HOME']+'/.lyrics'
+win.on('close', function() {this.hide()});
+app.on('reopen', function() {win.show(); win.focus()})
+
+var lyrics_dir = process.env['HOME']+'/.lyrics';
+
+
 
 document.onkeydown = function(evt) {
     var tag = evt.target.tagName.toLowerCase();
