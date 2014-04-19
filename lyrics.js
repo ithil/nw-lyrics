@@ -7,7 +7,7 @@ var lyrics_dir = process.env['HOME']+'/.lyrics'
 
 document.onkeydown = function(evt) {
     var tag = evt.target.tagName.toLowerCase();
-    if (tag != 'input' && tag != 'textarea') { 
+    if (tag != 'input' && tag != 'textarea' && evt.target.getAttribute('contenteditable') != 'true') { 
         if (String.fromCharCode(evt.keyCode) == "R") {
             refreshLyrics();
         }
@@ -66,22 +66,32 @@ function setTopbar(artist, title) {
     document.getElementById('title').innerText = title;
 }
 
-setLyrics = function(lyrics) {
-        lyricsDiv = document.getElementById('lyrics')
-        lyricsDiv.innerText = lyrics
+function setLyrics(lyrics) {
+    lyricsDiv = document.getElementById('lyrics')
+    lyricsDiv.innerText = lyrics
+}
+
+function saveLyrics(artist, title, lyrics) {
+    if(!fs.existsSync(lyrics_dir)) {fs.mkdirSync(lyrics_dir)}
+    fs.writeFile(lyrics_dir+'/'+artist+':'+title+'.txt', lyrics.toString())
+}
+
+function readLyrics(artist, title) {
+    if(fs.existsSync(lyrics_dir+'/'+artist+':'+title+'.txt')) {
+        fs.readFile(lyrics_dir+'/'+artist+':'+title+'.txt', function (error, data) {
+            if(error) throw error
+            setLyrics(data)
+        })
+        return true;
+    }
+    else {return false}
 }
 
 function getLyrics(info) {
     if(!info) {return}
     setTopbar(info[0], info[1])
     artist = info[0].replace(/ /g, "_");title = info[1].replace(/ /g, "_")
-    if(fs.existsSync(lyrics_dir+'/'+artist+':'+title+'.txt')) {
-        fs.readFile(lyrics_dir+'/'+artist+':'+title+'.txt', function (error, data) {
-            if(error) throw error
-            setLyrics(data)
-        })
-        return;
-    }
+    if(readLyrics(artist, title)) {return}
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         //console.log(html)
@@ -93,8 +103,7 @@ function getLyrics(info) {
         lyricBox.find('br').each(function(i,e) { $(this).replaceWith("\n")}) // Adding newlines
         myLyrics = lyricBox.text().trim()  // Removing trailing newlines
         //Saving lyrics
-        if(!fs.existsSync(lyrics_dir)) {fs.mkdirSync(lyrics_dir)}
-        fs.writeFile(lyrics_dir+'/'+artist+':'+title+'.txt', myLyrics.toString())
+        saveLyrics(artist, title, myLyrics.toString())
         setLyrics(myLyrics)
       }
     })
