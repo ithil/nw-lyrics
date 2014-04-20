@@ -14,6 +14,29 @@ var lyrics_dir = process.env['HOME']+'/.lyrics';
 
 
 document.onkeydown = function(evt) {
+    if ((evt.which == '115' || evt.which == '83' ) && (evt.ctrlKey || evt.metaKey))
+        {
+            evt.preventDefault();
+            var lyricsDiv = document.getElementById('lyrics');
+            lyricsDiv.removeAttribute('class');
+            lyricsDiv.removeAttribute('contenteditable');
+            var lyrics = lyricsDiv.innerText;
+            var artist = document.getElementById('artist').textContent;
+            var title = document.getElementById('title').textContent;
+            artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_")
+            saveLyrics(artist, title, lyrics);
+            return false;
+        }
+    if (evt.keyCode == 27) {
+            evt.preventDefault();
+            var lyricsDiv = document.getElementById('lyrics');
+            lyricsDiv.removeAttribute('class');
+            lyricsDiv.removeAttribute('contenteditable');
+            var artist = document.getElementById('artist').textContent;
+            var title = document.getElementById('title').textContent;
+            artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_")
+            readLyrics(artist, title);
+    }
     var tag = evt.target.tagName.toLowerCase();
     if (tag != 'input' && tag != 'textarea' && evt.target.getAttribute('contenteditable') != 'true') { 
         if (String.fromCharCode(evt.keyCode) == "R") {
@@ -25,7 +48,17 @@ document.onkeydown = function(evt) {
         if (String.fromCharCode(evt.keyCode) == "S") {
             toggleSearch();
         }
+        if (String.fromCharCode(evt.keyCode) == "E") {
+            editMode();
+        }
     };
+}
+
+function editMode() {
+    var lyricsDiv = document.getElementById("lyrics"); 
+    lyricsDiv.setAttribute('class', "editmode");
+    lyricsDiv.setAttribute('contenteditable', "true");
+    console.log('Editmode');
 }
 
 function onSearch(e) {

@@ -7,10 +7,20 @@ html, body {
 }
 
 div#lyrics {
-  padding: 3%;
+  padding: 2%;
   font-size: 14px;
-  margin-top: 70px;
+  margin-top: 80px;
+  margin-left: 5px;
   font-family: 'Gafata', sans-serif;
+}
+
+.editmode {
+  border: 5px dashed gray;
+}
+
+.editmode:focus {
+  border-color: cornflowerblue;
+  outline: 0;
 }
 
 div#topbar {
