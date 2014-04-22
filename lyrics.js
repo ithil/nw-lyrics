@@ -1,6 +1,6 @@
 var request = require('request');
 var cheerio = require('cheerio');
-var exec = require('child_process').exec;
+var itunes = require('playback');
 var fs = require('fs');
 var gui = require('nw.gui');
 var win = gui.Window.get();
@@ -8,9 +8,24 @@ var app = gui.App;
 
 win.on('close', function() {this.hide()});
 app.on('reopen', function() {win.show(); win.focus()})
+itunes.on('playing', function(data) {
+   NRdiv = document.getElementById('iTunesNotRunning');
+   lyricsDiv = document.getElementById('lyrics');
+   topbarDiv = document.getElementById('topbar');
+   if(!data) {
+        NRdiv.style.display = 'block';
+        lyricsDiv.style.display = 'none';
+        topbarDiv.style.display = 'none';
+        return;
+   }
+   NRdiv.style.display = 'none';
+   lyricsDiv.style.display = 'block';
+   topbarDiv.style.display = 'block';
+   var info = [ data.artist, data.name ]; 
+   getLyrics(info);
+})
 
 var lyrics_dir = process.env['HOME']+'/.lyrics';
-
 
 
 document.onkeydown = function(evt) {
@@ -40,7 +55,7 @@ document.onkeydown = function(evt) {
     var tag = evt.target.tagName.toLowerCase();
     if (tag != 'input' && tag != 'textarea' && evt.target.getAttribute('contenteditable') != 'true') { 
         if (String.fromCharCode(evt.keyCode) == "R") {
-            refreshLyrics();
+            itunes.currentTrack();
         }
         if (String.fromCharCode(evt.keyCode) == "D") {
             require('nw.gui').Window.get().showDevTools()
@@ -89,18 +104,6 @@ function toggleSearch() {
         lBox.style.display = "block";
     }
 }
-function refreshLyrics(info) {
-    if(info) {getLyrics(info); return}
-    exec('osascript nowplaying.scpt', 
-            function (error, stdout, stderr) {
-                output = String(stdout)
-                if(output && output.length > 0) {
-                   info = output.split("\n") 
-                }
-                getLyrics(info)
-             })
-}
-
 function setTopbar(artist, title) {
     document.getElementById('topbar').style.display = 'block'; //Make topbar visible
     document.getElementById('artist').innerText = artist;
@@ -135,7 +138,6 @@ function getLyrics(info) {
     if(readLyrics(artist, title)) {return}
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
       if (!error && response.statusCode == 200) {
-        //console.log(html)
         var $ = cheerio.load(html)
 
         // Extracting the lyrics
@@ -150,4 +152,4 @@ function getLyrics(info) {
     })
 }
 
-refreshLyrics()
+itunes.currentTrack();

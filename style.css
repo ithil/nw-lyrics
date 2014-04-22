@@ -27,7 +27,7 @@ div#topbar {
   /*background-color: rgba(0,0,0,.1);*/
   /*margin: 0px;*/
   padding: 0.1%;
-  padding-left: 0:
+  padding-left: 0;
   font-family: serif;
   line-height: 95%;
 }
@@ -48,8 +48,40 @@ div#search input {
   margin: 1%;
   padding: 1%;
   margin-top: 70px;
- 
 }
+
+#iTunesNotRunning {
+  padding: 20px;
+  font-size: 33px;
+  font-family: georgia;
+  color: darkmagenta;
+  font-style: oblique;
+  background: beige;
+  border-bottom-right-radius: 40px;
+  border-top-right-radius: 5px;
+  box-shadow: 0px 0px 10px 1px beige;
+  margin-top: 13px;
+}
+
+#NoLyricsFound {
+  margin-top: 90px;
+}
+
+#NoLyricsFound h2 {
+  padding: 10px;
+  margin: 0;
+  color: gold;
+  font-family: georgia;
+  font-size: 30px;
+  font-style: italic;
+  background: whitesmoke;
+  border-bottom-right-radius: 20px;
+  border-top-right-radius: 40px;
+  border-top: 2px solid gold;
+  border-bottom: 2px solid gold;
+  border-right: 2px solid gold;
+}
+
 .ribbon {
    width: auto;
    position: absolute;
