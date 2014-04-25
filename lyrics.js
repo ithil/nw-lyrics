@@ -21,8 +21,8 @@ itunes.on('playing', function(data) {
    NRdiv.style.display = 'none';
    lyricsDiv.style.display = 'block';
    topbarDiv.style.display = 'block';
-   var info = [ data.artist, data.name ]; 
-   getLyrics(info);
+
+   getLyrics(data.artist, data.name);
 })
 
 var lyrics_dir = process.env['HOME']+'/.lyrics';
@@ -69,11 +69,22 @@ document.onkeydown = function(evt) {
     };
 }
 
+function autoSizeText(el) {
+    el.style.fontSize = null;
+    function resizeText() {
+        var style = window.getComputedStyle(el);
+        var elNewFontSize = (parseInt(style.getPropertyValue('font-size').slice(0,-2)) -1) + 'px';
+        el.style.fontSize = elNewFontSize;
+    }
+    while (el.offsetWidth+50 > window.innerWidth) { resizeText(); }
+}
+
 function editMode() {
     var lyricsDiv = document.getElementById("lyrics"); 
+    document.getElementById('NoLyricsFound').style.display = 'none';
+    lyricsDiv.style.display = 'block';
     lyricsDiv.setAttribute('class', "editmode");
     lyricsDiv.setAttribute('contenteditable', "true");
-    console.log('Editmode');
 }
 
 function onSearch(e) {
@@ -81,9 +92,10 @@ function onSearch(e) {
     if (e.keyCode == '13') {
         aBox = document.getElementById('searchArtist');
         tBox = document.getElementById('searchTitle');
-        info = [aBox.value, tBox.value];
+        NRdiv = document.getElementById('iTunesNotRunning');
+        NRdiv.style.display = 'none';
         toggleSearch();
-        getLyrics(info);
+        getLyrics(aBox.value, tBox.value);
     };
 };
 
@@ -106,8 +118,11 @@ function toggleSearch() {
 }
 function setTopbar(artist, title) {
     document.getElementById('topbar').style.display = 'block'; //Make topbar visible
-    document.getElementById('artist').innerText = artist;
-    document.getElementById('title').innerText = title;
+    var divArtist = document.getElementById('artist');
+    divArtist.innerText = artist;
+    var divTitle = document.getElementById('title');
+    divTitle.innerText = title;
+    autoSizeText(divArtist); autoSizeText(divTitle);
 }
 
 function setLyrics(lyrics) {
@@ -117,37 +132,49 @@ function setLyrics(lyrics) {
 
 function saveLyrics(artist, title, lyrics) {
     if(!fs.existsSync(lyrics_dir)) {fs.mkdirSync(lyrics_dir)}
-    fs.writeFile(lyrics_dir+'/'+artist+':'+title+'.txt', lyrics.toString())
+    fs.writeFile(lyrics_dir+'/'+artist+':'+title+'.txt', lyrics.toString('utf-8'))
 }
 
-function readLyrics(artist, title) {
+function readLyrics(artist, title, callback) {
     if(fs.existsSync(lyrics_dir+'/'+artist+':'+title+'.txt')) {
-        fs.readFile(lyrics_dir+'/'+artist+':'+title+'.txt', function (error, data) {
+        fs.readFile(lyrics_dir+'/'+artist+':'+title+'.txt', 'utf-8', function (error, data) {
             if(error) throw error
-            setLyrics(data)
+            if(callback == null) {
+                setLyrics(data);
+            }
+            else { callback(data) }
         })
         return true;
     }
     else {return false}
 }
 
-function getLyrics(info) {
-    if(!info) {return}
-    setTopbar(info[0], info[1])
-    artist = info[0].replace(/ /g, "_");title = info[1].replace(/ /g, "_")
-    if(readLyrics(artist, title)) {return}
+function getLyrics(artist, title, callback) {
+    if(!artist || !title) {return false}
+    setTopbar(artist, title);
+    artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_");
+    if(readLyrics(artist, title, callback)) {return}
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
       if (!error && response.statusCode == 200) {
-        var $ = cheerio.load(html)
+        var $ = cheerio.load(html);
 
         // Extracting the lyrics
-        lyricBox = $('div.lyricbox')
-        lyricBox.find('div.rtMatcher').remove() // Removing ads
-        lyricBox.find('br').each(function(i,e) { $(this).replaceWith("\n")}) // Adding newlines
-        myLyrics = lyricBox.text().trim()  // Removing trailing newlines
-        //Saving lyrics
-        saveLyrics(artist, title, myLyrics.toString())
-        setLyrics(myLyrics)
+        lyricBox = $('div.lyricbox');
+        lyricBox.find('div.rtMatcher').remove(); // Removing ads
+        lyricBox.find('br').each(function(i,e) { $(this).replaceWith("\n")}); // Adding newlines
+        myLyrics = lyricBox.text().trim();  // Removing trailing newlines
+        if(!callback) {
+            document.getElementById('NoLyricsFound').style.display = 'none';
+            //Saving lyrics
+            saveLyrics(artist, title, myLyrics.toString());
+            setLyrics(myLyrics);
+        }
+        else { callback(myLyrics); }
+      }
+      else {
+        setLyrics('');
+        document.getElementById('lyrics').style.display = 'none';
+        document.getElementById('NoLyricsFound').style.display = 'block';
       }
     })
 }
