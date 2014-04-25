@@ -11,6 +11,7 @@ div#lyrics {
   font-size: 14px;
   margin-left: 5px;
   font-family: georgia;
+  text-align: center;
 }
 
 .editmode {

@@ -180,4 +180,19 @@ function getLyrics(artist, title, callback) {
     })
 }
 
+function addMenu() {
+    var alignLyrics = function (pos) { document.getElementById('lyrics').style.textAlign = pos; }
+    var menubar = new gui.Menu({type: 'menubar'})
+    var alignMenu = new gui.Menu();
+    win.menu = menubar;
+    var leftButton = new gui.MenuItem({ label: 'Left', click: function() { alignLyrics('left'); } });
+    var centerButton = new gui.MenuItem({ label: 'Center', click: function() { alignLyrics('center'); } });
+    var rightButton = new gui.MenuItem({ label: 'Right', click: function() { alignLyrics('right'); } });
+    alignMenu.append(leftButton);
+    alignMenu.append(centerButton);
+    alignMenu.append(rightButton);
+    win.menu.insert(new gui.MenuItem({ label: 'Align', submenu: alignMenu }), 2)
+}
+
+addMenu();
 itunes.currentTrack();
