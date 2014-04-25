@@ -79,12 +79,13 @@ function autoSizeText(el) {
     while (el.offsetWidth+50 > window.innerWidth) { resizeText(); }
 }
 
-function editMode() {
+function editMode(focus) {
     var lyricsDiv = document.getElementById("lyrics"); 
     document.getElementById('NoLyricsFound').style.display = 'none';
     lyricsDiv.style.display = 'block';
     lyricsDiv.setAttribute('class', "editmode");
     lyricsDiv.setAttribute('contenteditable', "true");
+    if(focus) { lyricsDiv.focus(); }
 }
 
 function onSearch(e) {
