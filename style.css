@@ -9,7 +9,6 @@ html, body {
 div#lyrics {
   padding: 2%;
   font-size: 14px;
-  margin-top: 80px;
   margin-left: 5px;
   font-family: georgia;
 }
@@ -30,6 +29,7 @@ div#topbar {
   padding-left: 0;
   font-family: serif;
   line-height: 95%;
+  height: 80px;
 }
 
 div#title {
@@ -42,9 +42,6 @@ div#artist {
   font-style: italic;
 }
 
-div#search {
-    margin-top: 80px;
-}
 div#search input {
   border:dashed 3px rgba(0,0,0,0.1);
   font-family: georgia;
@@ -70,6 +67,7 @@ div#search input:focus {
   border-top-right-radius: 5px;
   box-shadow: 0px 0px 10px 1px beige;
   margin-top: 13px;
+  margin-bottom: 10px;
 }
 
 #NoLyricsFound {
