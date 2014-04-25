@@ -23,6 +23,7 @@ itunes.on('playing', function(data) {
    topbarDiv.style.display = 'block';
 
    getLyrics(data.artist, data.name);
+   window.scrollTo(0,0);
 })
 
 var lyrics_dir = process.env['HOME']+'/.lyrics';
