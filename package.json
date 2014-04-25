@@ -1,9 +1,10 @@
 {
-  "name": "min_lyrics",
+  "name": "Lyrics NW",
   "description": "Lyrics.",
   "version": "0.0.1",
   "main": "./lyrics.html",
   "window": {
+    "title": "Lyrics",
     "show": true,
     "toolbar": false,
     "frame": true,
