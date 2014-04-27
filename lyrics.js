@@ -128,18 +128,18 @@ function setTopbar(artist, title) {
 }
 
 function setLyrics(lyrics) {
-    lyricsDiv = document.getElementById('lyrics')
-    lyricsDiv.innerText = lyrics
+    lyricsDiv = document.getElementById('lyrics');
+    lyricsDiv.innerText = lyrics;
 }
 
 function saveLyrics(artist, title, lyrics) {
     if(!fs.existsSync(lyrics_dir)) {fs.mkdirSync(lyrics_dir)}
-    fs.writeFile(lyrics_dir+'/'+artist+':'+title+'.txt', lyrics.toString('utf-8'))
+    fs.writeFile(lyrics_dir+'/'+artist+':'+title+'.txt', lyrics.toString()+'\n');
 }
 
 function readLyrics(artist, title, callback) {
     if(fs.existsSync(lyrics_dir+'/'+artist+':'+title+'.txt')) {
-        fs.readFile(lyrics_dir+'/'+artist+':'+title+'.txt', 'utf-8', function (error, data) {
+        fs.readFile(lyrics_dir+'/'+artist+':'+title+'.txt', 'utf8', function (error, data) {
             if(error) throw error
             if(callback == null) {
                 setLyrics(data);
@@ -155,7 +155,7 @@ function getLyrics(artist, title, callback) {
     if(!artist || !title) {return false}
     setTopbar(artist, title);
     artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_");
-    if(readLyrics(artist, title, callback)) {return}
+    if(readLyrics(artist, title, callback)) {document.getElementById('NoLyricsFound').style.display = 'none'; return;}
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var $ = cheerio.load(html);
