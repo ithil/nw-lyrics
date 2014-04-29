@@ -1,6 +1,6 @@
 {
-  "name": "Lyrics NW",
-  "description": "Lyrics.",
+  "name": "Lyrics-NW",
+  "description": "Lyrics App for Mac OS X.",
   "version": "0.0.1",
   "main": "./lyrics.html",
   "window": {
@@ -13,5 +13,19 @@
     "height": 500,
     "min_width": 220,
     "min_height": 220
+  },
+  "license": "MIT",
+  "os": [ "darwin" ],
+  "dependencies": {
+    "playback":"",  
+    "cheerio":"",  
+    "request":""  
+  },
+  "repository" :{ 
+    "type": "git",
+    "url": "http://github.com/ithil/nw-lyrics.git"
+  },
+  "bugs": {
+    "url": "http://github.com/ithil/nw-lyrics/issues"
   }
 }
