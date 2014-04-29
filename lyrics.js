@@ -11,16 +11,16 @@ app.on('reopen', function() {win.show(); win.focus()})
 itunes.on('playing', function(data) {
    NRdiv = document.getElementById('iTunesNotRunning');
    lyricsDiv = document.getElementById('lyrics');
-   topbarDiv = document.getElementById('topbar');
+   headerDiv = document.getElementById('header');
    if(!data) {
         NRdiv.style.display = 'block';
         lyricsDiv.style.display = 'none';
-        topbarDiv.style.display = 'none';
+        headerDiv.style.display = 'none';
         return;
    }
    NRdiv.style.display = 'none';
    lyricsDiv.style.display = 'block';
-   topbarDiv.style.display = 'block';
+   headerDiv.style.display = 'block';
 
    getLyrics(data.artist, data.name);
    window.scrollTo(0,0);
@@ -118,8 +118,8 @@ function toggleSearch() {
         lBox.style.display = "block";
     }
 }
-function setTopbar(artist, title) {
-    document.getElementById('topbar').style.display = 'block'; //Make topbar visible
+function setHeader(artist, title) {
+    document.getElementById('header').style.display = 'block'; //Make header visible
     var divArtist = document.getElementById('artist');
     divArtist.innerText = artist;
     var divTitle = document.getElementById('title');
@@ -153,7 +153,7 @@ function readLyrics(artist, title, callback) {
 
 function getLyrics(artist, title, callback) {
     if(!artist || !title) {return false}
-    setTopbar(artist, title);
+    setHeader(artist, title);
     artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_");
     if(readLyrics(artist, title, callback)) {document.getElementById('NoLyricsFound').style.display = 'none'; return;}
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
