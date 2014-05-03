@@ -103,6 +103,38 @@ div#search input:focus {
   border-right: 2px solid gold;
 }
 
+.NotFound {
+    margin-left: 30px;
+    margin-bottom: 10px;
+    opacity: 0.8;
+    font-family: georgia;
+    background-color: #ededed;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    text-indent: 0;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    color: #777777;
+    font-size: 15px;
+    font-weight: bold;
+    font-style: normal;
+    height: 35px;
+    line-height: 30px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.NotFound:hover {
+    opacity: 1;
+}
+
+.NotFound:active {
+    opacity: 1;
+    background-color: #FFF1A6;
+}
+
 .ribbon {
    width: auto;
    position: absolute;

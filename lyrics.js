@@ -5,6 +5,7 @@ var fs = require('fs');
 var gui = require('nw.gui');
 var win = gui.Window.get();
 var app = gui.App;
+var np = { };
 
 win.on('close', function() {this.hide()});
 app.on('reopen', function() {win.show(); win.focus()})
@@ -89,6 +90,22 @@ function editMode(focus) {
     if(focus) { lyricsDiv.focus(); }
 }
 
+function markAsInstrumental(artist, title) {
+    var artist = artist || np.artist;
+    var title = title || np.title;
+    saveLyrics(artist, title, "Instrumental");
+    setLyrics('Instrumental');
+    document.getElementById('NoLyricsFound').style.display = 'none';
+    document.getElementById('lyrics').style.display = 'block';
+}
+
+function webSearch(artist, title) {
+    var artist = artist || np.artist;
+    var title = title || np.title;
+    var query = artist + ' ' + title + ' lyrics';
+    gui.Shell.openExternal('http://google.com/search?q='+encodeURI(query));
+}
+
 function onSearch(e) {
     if (!e) e = window.event;
     if (e.keyCode == '13') {
@@ -154,6 +171,7 @@ function readLyrics(artist, title, callback) {
 function getLyrics(artist, title, callback) {
     if(!artist || !title) {return false}
     setHeader(artist, title);
+    np.artist = artist; np.title = title;
     artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_");
     if(readLyrics(artist, title, callback)) {document.getElementById('NoLyricsFound').style.display = 'none'; return;}
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
