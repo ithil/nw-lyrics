@@ -183,16 +183,24 @@ function getLyrics(artist, title, callback) {
 
 function addMenu() {
     var alignLyrics = function (pos) { document.getElementById('lyrics').style.textAlign = pos; }
+    var zoom = function (n) {if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}}
     var menubar = new gui.Menu({type: 'menubar'})
-    var alignMenu = new gui.Menu();
+    var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu();
     win.menu = menubar;
     var leftButton = new gui.MenuItem({ label: 'Left', click: function() { alignLyrics('left'); } });
     var centerButton = new gui.MenuItem({ label: 'Center', click: function() { alignLyrics('center'); } });
     var rightButton = new gui.MenuItem({ label: 'Right', click: function() { alignLyrics('right'); } });
+    var zoomIn = new gui.MenuItem({ label: 'Zoom In', click: function() { zoom(1); } });
+    var zoomOut = new gui.MenuItem({ label: 'Zoom out', click: function() { zoom(-1); } });
+    var zoomReset = new gui.MenuItem({ label: 'Reset Zoom', click: function() { zoom(0); } });
     alignMenu.append(leftButton);
     alignMenu.append(centerButton);
     alignMenu.append(rightButton);
+    zoomMenu.append(zoomIn);
+    zoomMenu.append(zoomOut);
+    zoomMenu.append(zoomReset);
     win.menu.insert(new gui.MenuItem({ label: 'Align', submenu: alignMenu }), 2)
+    win.menu.insert(new gui.MenuItem({ label: 'Zoom', submenu: zoomMenu }), 3)
 }
 
 addMenu();
