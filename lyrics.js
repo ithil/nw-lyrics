@@ -181,6 +181,7 @@ function getLyrics(artist, title, callback) {
         // Extracting the lyrics
         lyricBox = $('div.lyricbox');
         lyricBox.find('div.rtMatcher').remove(); // Removing ads
+        lyricBox.find('script').remove();
         lyricBox.find('br').each(function(i,e) { $(this).replaceWith("\n")}); // Adding newlines
         myLyrics = lyricBox.text().trim();  // Removing trailing newlines
         if(!callback) {
