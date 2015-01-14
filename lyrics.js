@@ -10,18 +10,19 @@ var np = { };
 win.on('close', function() {this.hide()});
 app.on('reopen', function() {win.show(); win.focus()})
 itunes.on('playing', function(data) {
-   NRdiv = document.getElementById('iTunesNotRunning');
-   lyricsDiv = document.getElementById('lyrics');
-   headerDiv = document.getElementById('header');
+   NRdiv = $('#iTunesNotRunning');
+   lyricsDiv = $('#lyrics');
+   headerDiv = $('#header');
    if(!data) {
-        NRdiv.style.display = 'block';
-        lyricsDiv.style.display = 'none';
-        headerDiv.style.display = 'none';
+        NRdiv.show();
+        lyricsDiv.hide();
+        headerDiv.hide();
+        $('#loader').hide();
         return;
    }
-   NRdiv.style.display = 'none';
-   lyricsDiv.style.display = 'block';
-   headerDiv.style.display = 'block';
+   NRdiv.hide();
+   lyricsDiv.show();
+   headerDiv.show();
 
    getLyrics(data.artist, data.name);
    window.scrollTo(0,0);
@@ -30,27 +31,27 @@ itunes.on('playing', function(data) {
 var lyrics_dir = process.env['HOME']+'/.lyrics';
 
 
-document.onkeydown = function(evt) {
+$(document).keydown(function(evt) {
     if ((evt.which == '115' || evt.which == '83' ) && (evt.ctrlKey || evt.metaKey))
         {
             evt.preventDefault();
-            var lyricsDiv = document.getElementById('lyrics');
-            lyricsDiv.removeAttribute('class');
-            lyricsDiv.removeAttribute('contenteditable');
-            var lyrics = lyricsDiv.innerText;
-            var artist = document.getElementById('artist').textContent;
-            var title = document.getElementById('title').textContent;
+            var lyricsDiv = $('#lyrics');
+            lyricsDiv.removeAttr('class');
+            lyricsDiv.removeAttr('contenteditable');
+            var lyrics = lyricsDiv.text();
+            var artist = $('#artist').text();
+            var title = $('#title').text();
             artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_")
             saveLyrics(artist, title, lyrics);
             return false;
         }
     if (evt.keyCode == 27) {
             evt.preventDefault();
-            var lyricsDiv = document.getElementById('lyrics');
-            lyricsDiv.removeAttribute('class');
-            lyricsDiv.removeAttribute('contenteditable');
-            var artist = document.getElementById('artist').textContent;
-            var title = document.getElementById('title').textContent;
+            var lyricsDiv = $('#lyrics');
+            lyricsDiv.removeAttr('class');
+            lyricsDiv.removeAttr('contenteditable');
+            var artist = $('#artist').text();
+            var title = $('#title').text();
             artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_")
             readLyrics(artist, title);
     }
@@ -69,7 +70,7 @@ document.onkeydown = function(evt) {
             editMode();
         }
     };
-}
+});
 
 function autoSizeText(el) {
     el.style.fontSize = null;
@@ -82,11 +83,11 @@ function autoSizeText(el) {
 }
 
 function editMode(focus) {
-    var lyricsDiv = document.getElementById("lyrics"); 
-    document.getElementById('NoLyricsFound').style.display = 'none';
-    lyricsDiv.style.display = 'block';
-    lyricsDiv.setAttribute('class', "editmode");
-    lyricsDiv.setAttribute('contenteditable', "true");
+    var lyricsDiv = $("#lyrics"); 
+    $('#NoLyricsFound').hide();
+    lyricsDiv.show();
+    lyricsDiv.attr('class', "editmode");
+    lyricsDiv.attr('contenteditable', "true");
     if(focus) { lyricsDiv.focus(); }
 }
 
@@ -95,8 +96,8 @@ function markAsInstrumental(artist, title) {
     var title = title || np.title;
     saveLyrics(artist, title, "Instrumental");
     setLyrics('Instrumental');
-    document.getElementById('NoLyricsFound').style.display = 'none';
-    document.getElementById('lyrics').style.display = 'block';
+    $('#NoLyricsFound').hide();
+    $('#lyrics').show();
 }
 
 function webSearch(artist, title) {
@@ -109,44 +110,38 @@ function webSearch(artist, title) {
 function onSearch(e) {
     if (!e) e = window.event;
     if (e.keyCode == '13') {
-        aBox = document.getElementById('searchArtist');
-        tBox = document.getElementById('searchTitle');
-        NRdiv = document.getElementById('iTunesNotRunning');
-        NRdiv.style.display = 'none';
+        aBox = $('#searchArtist');
+        tBox = $('#searchTitle');
+        NRdiv = $('#iTunesNotRunning');
+        NRdiv.hide();
         toggleSearch();
-        getLyrics(aBox.value, tBox.value);
+        getLyrics(aBox.val(), tBox.val());
     };
 };
 
-document.getElementById('searchArtist').onkeypress = onSearch;
-document.getElementById('searchTitle').onkeypress = onSearch;
+$('#searchArtist').keypress(onSearch);
+$('#searchTitle').keypress(onSearch);
 
 
 function toggleSearch() {
-    sBox = document.getElementById('search');
-    lBox = document.getElementById('lyrics');
+    var sBox = $('#search');
+    var lBox = $('#lyrics');
     if(typeof sBox == "undefined") {return;}
-    if(sBox.style.display == "none") {
-        lBox.style.display = "none";
-        sBox.style.display = "block";
-    }
-    else {
-        sBox.style.display = "none";
-        lBox.style.display = "block";
-    }
+    sBox.toggle();
+    lBox.toggle();
 }
 function setHeader(artist, title) {
-    document.getElementById('header').style.display = 'block'; //Make header visible
-    var divArtist = document.getElementById('artist');
-    divArtist.innerText = artist;
-    var divTitle = document.getElementById('title');
-    divTitle.innerText = title;
-    autoSizeText(divArtist); autoSizeText(divTitle);
+    $('#header').show(); //Make header visible
+    var divArtist = $('#artist');
+    divArtist.text(artist);
+    var divTitle = $('#title');
+    divTitle.text(title);
+    autoSizeText(divArtist[0]); autoSizeText(divTitle[0]);
 }
 
 function setLyrics(lyrics) {
-    lyricsDiv = document.getElementById('lyrics');
-    lyricsDiv.innerText = lyrics;
+    lyricsDiv = $('#lyrics');
+    lyricsDiv.text(lyrics);
 }
 
 function saveLyrics(artist, title, lyrics) {
@@ -173,19 +168,20 @@ function getLyrics(artist, title, callback) {
     setHeader(artist, title);
     np.artist = artist; np.title = title;
     artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_");
-    if(readLyrics(artist, title, callback)) {document.getElementById('NoLyricsFound').style.display = 'none'; return;}
+    if(readLyrics(artist, title, callback)) {$('#NoLyricsFound').hide(); return;}
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
       if (!error && response.statusCode == 200) {
-        var $ = cheerio.load(html);
+        var ch$ = cheerio.load(html);
 
         // Extracting the lyrics
-        lyricBox = $('div.lyricbox');
+        lyricBox = ch$('div.lyricbox');
         lyricBox.find('div.rtMatcher').remove(); // Removing ads
         lyricBox.find('script').remove();
-        lyricBox.find('br').each(function(i,e) { $(this).replaceWith("\n")}); // Adding newlines
+        lyricBox.find('br').each(function(i,e) { ch$(this).replaceWith("\n")}); // Adding newlines
         myLyrics = lyricBox.text().trim();  // Removing trailing newlines
         if(!callback) {
-            document.getElementById('NoLyricsFound').style.display = 'none';
+            $('#NoLyricsFound').hide();
+            $('#loader').hide();
             //Saving lyrics
             saveLyrics(artist, title, myLyrics.toString());
             setLyrics(myLyrics);
@@ -194,14 +190,15 @@ function getLyrics(artist, title, callback) {
       }
       else {
         setLyrics('');
-        document.getElementById('lyrics').style.display = 'none';
-        document.getElementById('NoLyricsFound').style.display = 'block';
+        $('#loader').hide();
+        $('#lyrics').hide();
+        $('#NoLyricsFound').show();
       }
     })
 }
 
 function addMenu() {
-    var alignLyrics = function (pos) { document.getElementById('lyrics').style.textAlign = pos; }
+    var alignLyrics = function (pos) { $('#lyrics').css('text-align', pos); }
     var zoom = function (n) {if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}}
     var menubar = new gui.Menu({type: 'menubar'})
     var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu();
