@@ -24,8 +24,10 @@ itunes.on('playing', function(data) {
    lyricsDiv.show();
    headerDiv.show();
 
-   getLyrics(data.artist, data.name);
-   window.scrollTo(0,0);
+   checkIfNewSong(data.artist, data.name, function (artist, title) {
+        getLyrics(artist, title);
+        window.scrollTo(0,0);
+   });
 })
 
 var lyrics_dir = process.env['HOME']+'/.lyrics';
@@ -130,6 +132,7 @@ function toggleSearch() {
     sBox.toggle();
     lBox.toggle();
 }
+
 function setHeader(artist, title) {
     $('#header').show(); //Make header visible
     var divArtist = $('#artist');
@@ -137,6 +140,16 @@ function setHeader(artist, title) {
     var divTitle = $('#title');
     divTitle.text(title);
     autoSizeText(divArtist[0]); autoSizeText(divTitle[0]);
+}
+
+function checkIfNewSong(artist, title, callback) {
+    var divArtist = $('#artist');
+    var curArtist = divArtist.text();
+    var divTitle = $('#title');
+    var curTitle = divTitle.text();
+    if(!( (curTitle == title) && (curArtist == artist) )) {
+        callback(artist, title);
+    }
 }
 
 function setLyrics(lyrics) {
