@@ -141,7 +141,7 @@ function setHeader(artist, title) {
 
 function setLyrics(lyrics) {
     lyricsDiv = $('#lyrics');
-    lyricsDiv.text(lyrics);
+    lyricsDiv[0].innerText = lyrics; //jQuery would ignore the newlines
 }
 
 function saveLyrics(artist, title, lyrics) {
