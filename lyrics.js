@@ -25,6 +25,7 @@ itunes.on('playing', function(data) {
    headerDiv.show();
 
    checkIfNewSong(data.artist, data.name, function (artist, title) {
+        $('#loader').show();
         getLyrics(artist, title);
         window.scrollTo(0,0);
    });
@@ -155,6 +156,7 @@ function checkIfNewSong(artist, title, callback) {
 function setLyrics(lyrics) {
     lyricsDiv = $('#lyrics');
     lyricsDiv[0].innerText = lyrics; //jQuery would ignore the newlines
+    $('#loader').hide();
 }
 
 function saveLyrics(artist, title, lyrics) {
@@ -194,7 +196,6 @@ function getLyrics(artist, title, callback) {
         myLyrics = lyricBox.text().trim();  // Removing trailing newlines
         if(!callback) {
             $('#NoLyricsFound').hide();
-            $('#loader').hide();
             //Saving lyrics
             saveLyrics(artist, title, myLyrics.toString());
             setLyrics(myLyrics);
@@ -203,7 +204,6 @@ function getLyrics(artist, title, callback) {
       }
       else {
         setLyrics('');
-        $('#loader').hide();
         $('#lyrics').hide();
         $('#NoLyricsFound').show();
       }
