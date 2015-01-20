@@ -25,6 +25,7 @@ itunes.on('playing', function(data) {
    headerDiv.show();
 
    checkIfNewSong(data.artist, data.name, function (artist, title) {
+        lyricsDiv.hide();
         $('#loader').show();
         getLyrics(artist, title);
         window.scrollTo(0,0);
@@ -155,6 +156,7 @@ function checkIfNewSong(artist, title, callback) {
 
 function setLyrics(lyrics) {
     lyricsDiv = $('#lyrics');
+    lyricsDiv.show();
     lyricsDiv[0].innerText = lyrics; //jQuery would ignore the newlines
     $('#loader').hide();
 }
