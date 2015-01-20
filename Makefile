@@ -7,7 +7,7 @@ all:
 	cp ./build/Info.plist ./$(APPNAME)/Contents
 	cp ./imgs/icon.icns ./$(APPNAME)/Contents/Resources/app.icns
 	mkdir -p ./$(APPNAME)/Contents/Resources/app.nw
-	cp -r ./package.json ./lyrics.js ./lyrics.html ./style.css ./node_modules ./$(APPNAME)/Contents/Resources/app.nw 
+	cp -r ./package.json ./lyrics.js ./lyrics.html ./style.css ./node_modules ./jquery-2.1.3.min.js ./$(APPNAME)/Contents/Resources/app.nw 
 
 link:
 	test -d $(NW_PATH) || echo "Error: node-webkit is not installed"
@@ -20,7 +20,7 @@ link:
 	mkdir -p ./$(APPNAME)/Contents/Resources
 	cp ./imgs/icon.icns ./$(APPNAME)/Contents/Resources/app.icns
 	mkdir -p ./$(APPNAME)/Contents/Resources/app.nw
-	cp -r ./package.json ./lyrics.js ./lyrics.html ./style.css ./node_modules ./$(APPNAME)/Contents/Resources/app.nw 
+	cp -r ./package.json ./lyrics.js ./lyrics.html ./style.css ./node_modules ./jquery-2.1.3.min.js ./$(APPNAME)/Contents/Resources/app.nw 
 
 clean:
 	rm -rf ./$(APPNAME)
