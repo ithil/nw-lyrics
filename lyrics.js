@@ -6,57 +6,48 @@ var gui = require('nw.gui');
 var win = gui.Window.get();
 var app = gui.App;
 var np = { };
+var lyrics_dir = process.env['HOME']+'/.lyrics';
+
+$(document).ready(function() {
+   NRdiv = $('#iTunesNotRunning');
+   lyricsDiv = $('#lyrics');
+   headerDiv = $('#header');
+   loaderDiv = $('#loader');
+   noLyricsDiv = $('#NoLyricsFound');
+   itunes.currentTrack();
+});
 
 win.on('close', function() {this.hide()});
 app.on('reopen', function() {win.show(); win.focus()})
 itunes.on('playing', function(data) {
-   NRdiv = $('#iTunesNotRunning');
-   lyricsDiv = $('#lyrics');
-   headerDiv = $('#header');
    if(!data) {
         NRdiv.show();
         lyricsDiv.hide();
         headerDiv.hide();
-        $('#loader').hide();
+        loaderDiv.hide();
         return;
    }
-   NRdiv.hide();
-   lyricsDiv.show();
-   headerDiv.show();
-
    checkIfNewSong(data.artist, data.name, function (artist, title) {
-        lyricsDiv.hide();
-        $('#loader').show();
-        getLyrics(artist, title);
-        window.scrollTo(0,0);
+       setCurrentTrack(artist, title);
    });
 })
 
-var lyrics_dir = process.env['HOME']+'/.lyrics';
-
-
 $(document).keydown(function(evt) {
-    if ((evt.which == '115' || evt.which == '83' ) && (evt.ctrlKey || evt.metaKey))
+    if ((evt.which == '115' || evt.which == '83' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+S
         {
             evt.preventDefault();
-            var lyricsDiv = $('#lyrics');
             lyricsDiv.removeAttr('class');
             lyricsDiv.removeAttr('contenteditable');
             var lyrics = lyricsDiv.text();
-            var artist = $('#artist').text();
-            var title = $('#title').text();
-            artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_")
+            var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
             saveLyrics(artist, title, lyrics);
             return false;
         }
-    if (evt.keyCode == 27) {
+    if (evt.keyCode == 27) { // Escape
             evt.preventDefault();
-            var lyricsDiv = $('#lyrics');
             lyricsDiv.removeAttr('class');
             lyricsDiv.removeAttr('contenteditable');
-            var artist = $('#artist').text();
-            var title = $('#title').text();
-            artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_")
+            var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
             readLyrics(artist, title);
     }
     var tag = evt.target.tagName.toLowerCase();
@@ -87,8 +78,7 @@ function autoSizeText(el) {
 }
 
 function editMode(focus) {
-    var lyricsDiv = $("#lyrics"); 
-    $('#NoLyricsFound').hide();
+    noLyricsDiv.hide();
     lyricsDiv.show();
     lyricsDiv.attr('class', "editmode");
     lyricsDiv.attr('contenteditable', "true");
@@ -100,8 +90,8 @@ function markAsInstrumental(artist, title) {
     var title = title || np.title;
     saveLyrics(artist, title, "Instrumental");
     setLyrics('Instrumental');
-    $('#NoLyricsFound').hide();
-    $('#lyrics').show();
+    noLyricsDiv.hide();
+    lyricsDiv.show();
 }
 
 function webSearch(artist, title) {
@@ -114,29 +104,28 @@ function webSearch(artist, title) {
 function onSearch(e) {
     if (!e) e = window.event;
     if (e.keyCode == '13') {
-        aBox = $('#searchArtist');
-        tBox = $('#searchTitle');
-        NRdiv = $('#iTunesNotRunning');
-        NRdiv.hide();
+        var aBox = $('#searchArtist');
+        var tBox = $('#searchTitle');
+        var artist = aBox.val();
+        var title = tBox.val();
         toggleSearch();
-        getLyrics(aBox.val(), tBox.val());
+        setCurrentTrack(artist, title);
     };
 };
 
 $('#searchArtist').keypress(onSearch);
 $('#searchTitle').keypress(onSearch);
 
-
 function toggleSearch() {
     var sBox = $('#search');
-    var lBox = $('#lyrics');
+    var lBox = lyricsDiv;
     if(typeof sBox == "undefined") {return;}
     sBox.toggle();
     lBox.toggle();
 }
 
 function setHeader(artist, title) {
-    $('#header').show(); //Make header visible
+    headerDiv.show(); //Make header visible
     var divArtist = $('#artist');
     divArtist.text(artist);
     var divTitle = $('#title');
@@ -145,20 +134,26 @@ function setHeader(artist, title) {
 }
 
 function checkIfNewSong(artist, title, callback) {
-    var divArtist = $('#artist');
-    var curArtist = divArtist.text();
-    var divTitle = $('#title');
-    var curTitle = divTitle.text();
-    if(!( (curTitle == title) && (curArtist == artist) )) {
+    if(!( (np.title == title) && (np.artist == artist) )) {
         callback(artist, title);
     }
 }
 
+function setCurrentTrack(artist, title) {
+    lyricsDiv.hide();
+    loaderDiv.show();
+    NRdiv.hide();
+    np.artist = artist; np.title = title;
+    setHeader(artist, title);
+    getLyrics(artist, title);
+    window.scrollTo(0,0);
+}
+
 function setLyrics(lyrics) {
-    lyricsDiv = $('#lyrics');
     lyricsDiv.show();
     lyricsDiv[0].innerText = lyrics; //jQuery would ignore the newlines
-    $('#loader').hide();
+    noLyricsDiv.hide();
+    loaderDiv.hide();
 }
 
 function saveLyrics(artist, title, lyrics) {
@@ -182,10 +177,8 @@ function readLyrics(artist, title, callback) {
 
 function getLyrics(artist, title, callback) {
     if(!artist || !title) {return false}
-    setHeader(artist, title);
-    np.artist = artist; np.title = title;
     artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_");
-    if(readLyrics(artist, title, callback)) {$('#NoLyricsFound').hide(); return;}
+    if(readLyrics(artist, title, callback)) {return;}
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
@@ -197,7 +190,6 @@ function getLyrics(artist, title, callback) {
         lyricBox.find('br').each(function(i,e) { ch$(this).replaceWith("\n")}); // Adding newlines
         myLyrics = lyricBox.text().trim();  // Removing trailing newlines
         if(!callback) {
-            $('#NoLyricsFound').hide();
             //Saving lyrics
             saveLyrics(artist, title, myLyrics.toString());
             setLyrics(myLyrics);
@@ -206,14 +198,14 @@ function getLyrics(artist, title, callback) {
       }
       else {
         setLyrics('');
-        $('#lyrics').hide();
-        $('#NoLyricsFound').show();
+        lyricsDiv.hide();
+        noLyricsDiv.show();
       }
     })
 }
 
 function addMenu() {
-    var alignLyrics = function (pos) { $('#lyrics').css('text-align', pos); }
+    var alignLyrics = function (pos) { lyricsDiv.css('text-align', pos); }
     var zoom = function (n) {if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}}
     var menubar = new gui.Menu({type: 'menubar'})
     var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu();
@@ -235,4 +227,3 @@ function addMenu() {
 }
 
 addMenu();
-itunes.currentTrack();
