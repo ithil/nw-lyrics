@@ -116,6 +116,14 @@ function onSearch(e) {
 $('#searchArtist').keypress(onSearch);
 $('#searchTitle').keypress(onSearch);
 
+$('#header').dblclick(function() {
+    var aBox = $('#searchArtist');
+    var tBox = $('#searchTitle');
+    aBox.val(np.artist);
+    tBox.val(np.title);
+    toggleSearch();
+});
+
 function toggleSearch() {
     var sBox = $('#search');
     var lBox = lyricsDiv;
