@@ -194,7 +194,7 @@ function readLyrics(artist, title, callback) {
             if(callback == null) {
                 setLyrics(data);
             }
-            else { callback(data) }
+            else { callback(true, data) }
         })
         return true;
     }
