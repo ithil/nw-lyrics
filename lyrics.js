@@ -54,6 +54,7 @@ $(document).keydown(function(evt) {
             lyricsDiv.removeAttr('class');
             lyricsDiv.removeAttr('contenteditable');
             var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
+            toggleSearch(false);
             readLyrics(artist, title);
     }
     var tag = evt.target.tagName.toLowerCase();
@@ -130,12 +131,13 @@ $('#header').dblclick(function() {
     toggleSearch();
 });
 
-function toggleSearch() {
+function toggleSearch(display) {
     var sBox = $('#search');
     var lBox = lyricsDiv;
     if(typeof sBox == "undefined") {return;}
-    sBox.toggle();
-    lBox.toggle();
+    sBox.toggle(display);
+    var inverseBool=function(b){if(typeof b=="undefined"){return b}else{return !b}}
+    lBox.toggle(inverseBool(display));
 }
 
 function setHeader(artist, title) {
