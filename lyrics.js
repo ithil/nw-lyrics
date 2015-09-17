@@ -44,7 +44,7 @@ $(document).keydown(function(evt) {
             evt.preventDefault();
             lyricsDiv.removeAttr('class');
             lyricsDiv.removeAttr('contenteditable');
-            var lyrics = lyricsDiv.text();
+            var lyrics = lyricsDiv[0].innerText;
             var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
             saveLyrics(artist, title, lyrics);
             return false;
