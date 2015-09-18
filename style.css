@@ -6,12 +6,25 @@ html, body {
   margin-left: 0;
 }
 
+body.fullscreen {
+  background-color: #000;
+}
+
+.fullscreen::-webkit-scrollbar {
+  display: none;
+}
+
 div#lyrics {
   padding: 2%;
   font-size: 14px;
   margin-left: 5px;
   font-family: georgia;
   text-align: center;
+}
+
+div#lyrics.fullscreen {
+  font-size: 30px;
+  color: #fff;
 }
 
 .editmode {
@@ -31,6 +44,10 @@ div#header {
   font-family: serif;
   line-height: 95%;
   height: 80px;
+}
+
+div#header.fullscreen {
+  display: none;
 }
 
 div#title {

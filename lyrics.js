@@ -38,11 +38,14 @@ itunes.on('playing', function(data) {
    });
 })
 
+win.on('enter-fullscreen', function() {$("html *").addClass('fullscreen')});
+win.on('leave-fullscreen', function() {$("html *").removeClass('fullscreen')});
+
 $(document).keydown(function(evt) {
     if ((evt.which == '115' || evt.which == '83' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+S
         {
             evt.preventDefault();
-            lyricsDiv.removeAttr('class');
+            lyricsDiv.removeClass('editmode');
             lyricsDiv.removeAttr('contenteditable');
             var lyrics = lyricsDiv[0].innerText;
             var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
@@ -51,7 +54,7 @@ $(document).keydown(function(evt) {
         }
     if (evt.keyCode == 27) { // Escape
             evt.preventDefault();
-            lyricsDiv.removeAttr('class');
+            lyricsDiv.removeClass('editmode');
             lyricsDiv.removeAttr('contenteditable');
             var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
             toggleSearch(false);
@@ -87,7 +90,7 @@ function autoSizeText(el) {
 function editMode(focus) {
     noLyricsDiv.hide();
     lyricsDiv.show();
-    lyricsDiv.attr('class', "editmode");
+    lyricsDiv.addClass("editmode");
     lyricsDiv.attr('contenteditable', "true");
     if(focus) { lyricsDiv.focus(); }
 }
