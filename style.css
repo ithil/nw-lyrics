@@ -47,7 +47,7 @@ div#header {
 }
 
 div#header.fullscreen {
-  display: none;
+  display: none !important;
 }
 
 div#title {
