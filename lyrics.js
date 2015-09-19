@@ -42,6 +42,10 @@ itunes.on('playing', function(data) {
 
 win.on('enter-fullscreen', function() {$("html *").addClass('fullscreen')});
 win.on('leave-fullscreen', function() {$("html *").removeClass('fullscreen')});
+window.addEventListener('resize', function(event){
+    autoSizeText($('#title')[0]);
+    autoSizeText($('#artist')[0]);
+});
 
 $(document).keydown(function(evt) {
     if ((evt.which == '115' || evt.which == '83' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+S
