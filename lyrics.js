@@ -13,6 +13,7 @@ var lyricsProviders = (function() {
     return arr;
 })();
 var lyrics_dir = process.env['HOME']+'/.lyrics';
+forceRefresh = false;
 
 $(document).ready(function() {
    NRdiv = $('#iTunesNotRunning');
@@ -33,6 +34,7 @@ itunes.on('playing', function(data) {
         loaderDiv.hide();
         return;
    }
+   if(forceRefresh) {setCurrentTrack(data.artist, data.title); forceRefresh=false;}
    checkIfNewSong(data.artist, data.name, function (artist, title) {
        setCurrentTrack(artist, title);
    });
@@ -63,6 +65,7 @@ $(document).keydown(function(evt) {
     var tag = evt.target.tagName.toLowerCase();
     if (tag != 'input' && tag != 'textarea' && evt.target.getAttribute('contenteditable') != 'true') { 
         if (String.fromCharCode(evt.keyCode) == "R") {
+            forceRefresh = true;
             itunes.currentTrack();
         }
         if (String.fromCharCode(evt.keyCode) == "D") {
