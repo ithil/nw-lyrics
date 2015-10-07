@@ -8,7 +8,7 @@ function addLyricsProvider(name, func) {
 }
 
 addLyricsProvider("LyricWikia", function(artist, title, callback) {
-    artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_");
+    artist = encodeURI(artist.replace(/ /g, "_"));title = encodeURI(title.replace(/ /g, "_"));
     request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
