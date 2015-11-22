@@ -40,8 +40,8 @@ itunes.on('playing', function(data) {
    });
 })
 
-win.on('enter-fullscreen', function() {$("html *").addClass('fullscreen')});
-win.on('leave-fullscreen', function() {$("html *").removeClass('fullscreen')});
+win.on('enter-fullscreen', function() {$("html *").addClass('fullscreen'); lyricsDiv.hide(); setTimeout(function() {lyricsDiv.show();}, 0);});
+win.on('leave-fullscreen', function() {$("html *").removeClass('fullscreen'); lyricsDiv.hide(); setTimeout(function() {lyricsDiv.show();}, 0);});
 window.addEventListener('resize', function(event){
     autoSizeText($('#title')[0]);
     autoSizeText($('#artist')[0]);
