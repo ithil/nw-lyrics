@@ -193,13 +193,20 @@ function setLyrics(lyrics) {
     loaderDiv.hide();
 }
 
+function cleanFileName(str, reverse) {
+    var fakeSlash = String.fromCharCode(8725);
+    var realSlash = "/";
+    return str.replace(RegExp(reverse?fakeSlash:realSlash,"g"), reverse?realSlash:fakeSlash);
+}
+
 function saveLyrics(artist, title, lyrics) {
     if(!fs.existsSync(lyrics_dir)) {fs.mkdirSync(lyrics_dir)}
+    artist = cleanFileName(artist.replace(/ /g, "_"));title = cleanFileName(title.replace(/ /g, "_"));
     fs.writeFile(lyrics_dir+'/'+artist+':'+title+'.txt', lyrics.toString()+'\n');
 }
 
 function readLyrics(artist, title, callback) {
-    artist = artist.replace(/ /g, "_");title = title.replace(/ /g, "_");
+    artist = cleanFileName(artist.replace(/ /g, "_"));title = cleanFileName(title.replace(/ /g, "_"));
     if(fs.existsSync(lyrics_dir+'/'+artist+':'+title+'.txt')) {
         fs.readFile(lyrics_dir+'/'+artist+':'+title+'.txt', 'utf8', function (error, data) {
             if(error) throw error
