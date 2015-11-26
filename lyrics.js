@@ -115,7 +115,7 @@ function webSearch(artist, title) {
     var artist = artist || np.artist;
     var title = title || np.title;
     var query = artist + ' ' + title + ' lyrics';
-    gui.Shell.openExternal('http://google.com/search?q='+encodeURI(query));
+    gui.Shell.openExternal('http://google.com/search?q='+encodeURIComponent(query));
 }
 
 function onSearch(e) {
