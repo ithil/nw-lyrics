@@ -24,7 +24,14 @@ $(document).ready(function() {
    itunes.currentTrack();
 });
 
-win.on('close', function() {this.hide()});
+win.on('close', function(event) {
+    if(event=="quit") {
+        win.close(true);
+    }
+    else{
+        this.hide();
+    }
+});
 app.on('reopen', function() {win.show(); win.focus()})
 itunes.on('playing', function(data) {
    if(!data) {
@@ -245,7 +252,8 @@ function getLyrics(artist, title, callback) {
 function addMenu() {
     var alignLyrics = function (pos) { lyricsDiv.css('text-align', pos); }
     var zoom = function (n) {if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}}
-    var menubar = new gui.Menu({type: 'menubar'})
+    var menubar = new gui.Menu({type: 'menubar'});
+    menubar.createMacBuiltin("Lyrics");
     var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu();
     win.menu = menubar;
     var leftButton = new gui.MenuItem({ label: 'Left', click: function() { alignLyrics('left'); } });
