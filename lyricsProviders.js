@@ -1,5 +1,6 @@
 var request = require('request');
 var cheerio = require('cheerio');
+var google = require('google');
 var lyricsProviders = new Object();
 
 function addLyricsProvider(name, func) {
@@ -24,6 +25,46 @@ addLyricsProvider("LyricWikia", function(artist, title, callback) {
         callback(false);
       }
    });
+});
+
+addLyricsProvider("MetroLyrics", function(artist, title, callback) {
+    google('site:metrolyrics.com '+title+' '+artist, function(gErr, gNext, gLinks) {
+        if(gErr) callback(false);
+        request(gLinks[0].link, function (error, response, html) {
+          if (!error && response.statusCode == 200) {
+            var ch$ = cheerio.load(html);
+            // Extracting the lyrics
+            var myLyrics = "";
+            ch$('div#lyrics-body-text p.verse').each(function() {
+                myLyrics = myLyrics.concat(ch$(this).text().trim()+"\n\n");
+            });
+            callback(true, myLyrics.trim());
+          }
+          else {
+            callback(false);
+          }
+        });
+    });
+});
+
+addLyricsProvider("AZLyrics", function(artist, title, callback) {
+    google('site:azlyrics.com '+title+' '+artist, function(gErr, gNext, gLinks) {
+        if(gErr) callback(false);
+        request(gLinks[0].link, function (error, response, html) {
+          if (!error && response.statusCode == 200) {
+            var ch$ = cheerio.load(html);
+            // Extracting the lyrics
+            var myLyrics = ch$(ch$('div.ringtone').nextAll('div')[0]).text().trim()
+            if(myLyrics) {
+                callback(true, myLyrics.trim());
+            }
+            else {callback(false);}
+          }
+          else {
+            callback(false);
+          }
+        });
+    });
 });
 
 module.exports = exports = lyricsProviders;

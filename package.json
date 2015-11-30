@@ -1,7 +1,7 @@
 {
   "name": "Lyrics-NW",
   "description": "Lyrics App for Mac OS X.",
-  "version": "0.0.1",
+  "version": "0.5",
   "main": "./lyrics.html",
   "window": {
     "title": "Lyrics",
@@ -19,7 +19,8 @@
   "dependencies": {
     "playback":"",  
     "cheerio":"",  
-    "request":""  
+    "request":"",
+    "google":""  
   },
   "repository" :{ 
     "type": "git",
