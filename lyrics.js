@@ -9,7 +9,7 @@ var lyricsProviders = (function() {
     var arr = new Array();
     $.each(obj, function(name, item) {
         arr.push(item);
-    }); 
+    });
     return arr;
 })();
 var lyrics_dir = process.env['HOME']+'/.lyrics';
@@ -65,6 +65,15 @@ $(document).keydown(function(evt) {
             saveLyrics(artist, title, lyrics);
             return false;
         }
+    if ((evt.which == '109' || evt.which == '77' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+M
+        {
+            evt.preventDefault();
+            var artist = np.artist;
+            var title = np.title;
+            var query = artist + ' ' + title;
+            gui.Shell.openExternal('http://songmeanings.com/query/?query='+encodeURIComponent(query));
+            return false;
+        }
     if (evt.keyCode == 27) { // Escape
             evt.preventDefault();
             lyricsDiv.removeClass('editmode');
@@ -74,7 +83,7 @@ $(document).keydown(function(evt) {
             readLyrics(artist, title);
     }
     var tag = evt.target.tagName.toLowerCase();
-    if (tag != 'input' && tag != 'textarea' && evt.target.getAttribute('contenteditable') != 'true') { 
+    if (tag != 'input' && tag != 'textarea' && evt.target.getAttribute('contenteditable') != 'true') {
         if (String.fromCharCode(evt.keyCode) == "R") {
             forceRefresh = true;
             itunes.currentTrack();
@@ -235,7 +244,7 @@ function getLyrics(artist, title, callback) {
         if(item) {
             item.func(artist, title, function (succ, lyrics) {
                 if(succ) {
-                    callback(true, lyrics); 
+                    callback(true, lyrics);
                 }
                 else {
                     asyncLoop(arr, index+1);
