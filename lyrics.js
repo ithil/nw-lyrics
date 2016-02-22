@@ -263,22 +263,28 @@ function addMenu() {
     var zoom = function (n) {if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}}
     var menubar = new gui.Menu({type: 'menubar'});
     menubar.createMacBuiltin("Lyrics");
-    var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu();
+    var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu(), songMenu = new gui.Menu();
     win.menu = menubar;
+    // Align menu
     var leftButton = new gui.MenuItem({ label: 'Left', click: function() { alignLyrics('left'); } });
     var centerButton = new gui.MenuItem({ label: 'Center', click: function() { alignLyrics('center'); } });
     var rightButton = new gui.MenuItem({ label: 'Right', click: function() { alignLyrics('right'); } });
-    var zoomIn = new gui.MenuItem({ label: 'Zoom In', click: function() { zoom(1); } });
-    var zoomOut = new gui.MenuItem({ label: 'Zoom out', click: function() { zoom(-1); } });
-    var zoomReset = new gui.MenuItem({ label: 'Reset Zoom', click: function() { zoom(0); } });
     alignMenu.append(leftButton);
     alignMenu.append(centerButton);
     alignMenu.append(rightButton);
+    win.menu.insert(new gui.MenuItem({ label: 'Align', submenu: alignMenu }), 2);
+    // Zoom menu
+    var zoomIn = new gui.MenuItem({ label: 'Zoom In', click: function() { zoom(1); } });
+    var zoomOut = new gui.MenuItem({ label: 'Zoom out', click: function() { zoom(-1); } });
+    var zoomReset = new gui.MenuItem({ label: 'Reset Zoom', click: function() { zoom(0); } });
     zoomMenu.append(zoomIn);
     zoomMenu.append(zoomOut);
     zoomMenu.append(zoomReset);
-    win.menu.insert(new gui.MenuItem({ label: 'Align', submenu: alignMenu }), 2)
-    win.menu.insert(new gui.MenuItem({ label: 'Zoom', submenu: zoomMenu }), 3)
+    win.menu.insert(new gui.MenuItem({ label: 'Zoom', submenu: zoomMenu }), 3);
+    // Song menu
+    win.menu.insert(new gui.MenuItem({ label: 'Song', submenu: songMenu }), 4);
+    songMenu.append(new gui.MenuItem({ label: 'Mark as Instrumental', click: function() { markAsInstrumental(); } }));
+    songMenu.append(new gui.MenuItem({ label: 'Web Search', click: function() { webSearch(); } }));
 }
 
 addMenu();
