@@ -29,7 +29,7 @@ addLyricsProvider("LyricWikia", function(artist, title, callback) {
 
 addLyricsProvider("MetroLyrics", function(artist, title, callback) {
   google('site:metrolyrics.com '+title+' '+artist, function(gErr, gNext, gLinks) {
-    if(gErr) callback(false);
+    if(gErr || !gLinks[0]) {callback(false); return false;}
     request(gLinks[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
@@ -49,7 +49,7 @@ addLyricsProvider("MetroLyrics", function(artist, title, callback) {
 
 addLyricsProvider("AZLyrics", function(artist, title, callback) {
   google('site:azlyrics.com '+title+' '+artist, function(gErr, gNext, gLinks) {
-    if(gErr) callback(false);
+    if(gErr || !gLinks[0]) {callback(false); return false;}
     request(gLinks[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
