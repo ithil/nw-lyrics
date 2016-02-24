@@ -61,8 +61,8 @@ $(document).keydown(function(evt) {
     lyricsDiv.removeClass('editmode');
     lyricsDiv.removeAttr('contenteditable');
     var lyrics = lyricsDiv[0].innerText;
-    var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
-    saveLyrics(artist, title, lyrics);
+    applyInstrumentalCss();
+    saveLyrics(np.artist, np.title, lyrics);
     return false;
   }
   if ((evt.which == '109' || evt.which == '77' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+M
@@ -114,6 +114,7 @@ function editMode(focus) {
   noLyricsDiv.hide();
   lyricsDiv.show();
   lyricsDiv.addClass("editmode");
+  lyrics.removeClass('instrumental');
   lyricsDiv.attr('contenteditable', "true");
   if(focus) { lyricsDiv.focus(); }
 }
@@ -123,8 +124,19 @@ function markAsInstrumental(artist, title) {
   var title = title || np.title;
   saveLyrics(artist, title, "Instrumental");
   setLyrics('Instrumental');
+  applyInstrumentalCss();
   noLyricsDiv.hide();
   lyricsDiv.show();
+}
+
+function applyInstrumentalCss() {
+  var txt = lyricsDiv.text();
+  if(/(\W+|^)Instrumental/.test(txt)) {;
+    lyricsDiv.addClass('instrumental');
+  }
+  else {
+    lyricsDiv.removeClass('instrumental');
+  }
 }
 
 function webSearch(artist, title) {
@@ -214,6 +226,7 @@ function setLyrics(lyrics) {
   lyricsDiv[0].innerText = lyrics; //jQuery would ignore the newlines
   noLyricsDiv.hide();
   loaderDiv.hide();
+  applyInstrumentalCss();
 }
 
 function cleanFileName(str, reverse) {

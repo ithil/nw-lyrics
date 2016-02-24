@@ -22,6 +22,17 @@ div#lyrics {
   text-align: center;
 }
 
+div#lyrics.instrumental {
+  font-size: 17px;
+  font-weight: bold;
+  font-style: italic;
+}
+
+div#lyrics.instrumental::before {
+  content: '\266A';
+  font-size: 40px;
+}
+
 div#lyrics.fullscreen {
   font-size: 30px;
   color: #fff;
@@ -232,8 +243,8 @@ div#search input:focus {
    right: 0;
    border-width: 1em 1em 0 0;
    }
-   
-   
+
+
 .ribbon2:after {
    right: -2em;
    border-left-width: 1.5em;
@@ -255,7 +266,7 @@ div#search input:focus {
    right: 0;
    border-width: 1em 1em 0 0;
    }
-   
+
 .ribbon-stitches-top {
    margin-top:2px;
    border-top: 1px dashed rgba(0, 0, 0, 0.2);
@@ -273,22 +284,22 @@ div#search input:focus {
 
 /* http://demo.marcofolio.net/facebook_loader/ */
 #loader { width:36px; height:32px; margin: 0px auto; }
- 
+
 /* Initial state */
 .loadingbar {
     background-color:rgba(153, 153, 153, 0.64); border:1px solid transparent; float:left;
     margin-right:4px; margin-top:6px; width:6px; height:18px;
-    
+
     /* Set the animation properties */
     -webkit-animation-duration: 1s;
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-name: loadingbar;
 }
- 
+
 /* Delay both the second and third bar at the start */
 #loader .loadingbar:nth-child(2) { -webkit-animation-delay: 0.1s; }
 #loader .loadingbar:nth-child(3) { -webkit-animation-delay: 0.2s; }
- 
+
 /* The actual animation */
 @-webkit-keyframes loadingbar {
      0% { }
