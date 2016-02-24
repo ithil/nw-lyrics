@@ -187,16 +187,23 @@ function setCurrentTrack(artist, title) {
   NRdiv.hide();
   np.artist = artist; np.title = title;
   setHeader(artist, title);
-  getLyrics(artist, title, function(succ, lyrics) {
-    if(succ) {
-      //Saving lyrics
-      saveLyrics(artist, title, lyrics.toString());
+  readLyrics(artist, title, function(succ, lyrics) {
+    if (succ) {
       setLyrics(lyrics);
     }
     else {
-      setLyrics('');
-      lyricsDiv.hide();
-      noLyricsDiv.show();
+      getLyrics(artist, title, function(succ, lyrics) {
+        if(succ) {
+          //Saving lyrics
+          saveLyrics(artist, title, lyrics.toString());
+          setLyrics(lyrics);
+        }
+        else {
+          setLyrics('');
+          lyricsDiv.hide();
+          noLyricsDiv.show();
+        }
+      });
     }
   });
   window.scrollTo(0,0);
@@ -231,14 +238,14 @@ function readLyrics(artist, title, callback) {
       }
       else { callback(true, data) }
     });
-    return true;
   }
-  else {return false}
+  else {
+    callback(false);
+  }
 }
 
 function getLyrics(artist, title, callback) {
   if(!artist || !title) {return false}
-  if(readLyrics(artist, title, callback)) {return;}
   var asyncLoop = function (arr, index) {
     var item = arr[index];
     if(item) {
