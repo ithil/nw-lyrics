@@ -13,6 +13,10 @@ addLyricsProvider("LyricWikia", function(artist, title, callback) {
   request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
     if (!error && response.statusCode == 200) {
       var ch$ = cheerio.load(html);
+      if(ch$('ul.categories a[title*="Unlicensed Lyrics"]').length) {
+        callback(false); // Abort if lyrics is incomplete/non-existent
+        return false;    // due to licensing issues
+      }
       // Extracting the lyrics
       lyricBox = ch$('div.lyricbox');
       lyricBox.find('div.rtMatcher').remove(); // Removing ads
