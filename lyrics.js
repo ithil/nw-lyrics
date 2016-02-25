@@ -114,7 +114,7 @@ function editMode(focus) {
   noLyricsDiv.hide();
   lyricsDiv.show();
   lyricsDiv.addClass("editmode");
-  lyrics.removeClass('instrumental');
+  lyricsDiv.removeClass('instrumental');
   lyricsDiv.attr('contenteditable', "true");
   if(focus) { lyricsDiv.focus(); }
 }
@@ -242,6 +242,7 @@ function saveLyrics(artist, title, lyrics) {
 }
 
 function readLyrics(artist, title, callback) {
+  if(!artist || !title) return false;
   artist = cleanFileName(artist.replace(/ /g, "_"));title = cleanFileName(title.replace(/ /g, "_"));
   if(fs.existsSync(lyrics_dir+'/'+artist+':'+title+'.txt')) {
     fs.readFile(lyrics_dir+'/'+artist+':'+title+'.txt', 'utf8', function (error, data) {
