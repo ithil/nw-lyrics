@@ -229,6 +229,18 @@ function setLyrics(lyrics) {
   applyInstrumentalCss();
 }
 
+function requeryLyrics(artist, title) {
+  loaderDiv.show();
+  getLyrics(artist, title, function(succ, lyrics) {
+    if(succ) {
+      //Saving lyrics
+      saveLyrics(artist, title, lyrics.toString());
+      setLyrics(lyrics);
+    }
+    loaderDiv.hide();
+  });
+}
+
 function cleanFileName(str, reverse) {
   var fakeSlash = String.fromCharCode(8725);
   var realSlash = "/";
@@ -298,6 +310,7 @@ function addMenu() {
   zoomMenu.append(new gui.MenuItem({ label: 'Reset Zoom', click: function() { zoom(0); } }));
   // Song menu
   win.menu.insert(new gui.MenuItem({ label: 'Song', submenu: songMenu }), 4);
+  songMenu.append(new gui.MenuItem({ label: 'Requery Lyrics', click: function() { requeryLyrics(np.artist, np.title); } }));
   songMenu.append(new gui.MenuItem({ label: 'Mark as Instrumental', click: function() { markAsInstrumental(); } }));
   songMenu.append(new gui.MenuItem({ label: 'Web Search', click: function() { webSearch(); } }));
 }
