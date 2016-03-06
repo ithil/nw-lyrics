@@ -272,6 +272,7 @@ function readLyrics(artist, title, callback) {
 
 function getLyrics(artist, title, callback) {
   if(!artist || !title) {return false}
+  var lyricsProvidersArr = Object.keys(lyricsProviders).map(function (key) {return lyricsProviders[key]});
   var asyncLoop = function (arr, index) {
     var item = arr[index];
     if(item) {
@@ -288,7 +289,7 @@ function getLyrics(artist, title, callback) {
       callback(false);
     }
   }
-  asyncLoop(lyricsProviders, 0);
+  asyncLoop(lyricsProvidersArr, 0);
 }
 
 function addMenu() {
