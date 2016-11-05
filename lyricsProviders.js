@@ -71,4 +71,52 @@ addLyricsProvider("AZLyrics", function(artist, title, callback) {
   });
 });
 
+addLyricsProvider("J-Lyrics.net", function(artist, title, callback) {
+  google('site:j-lyric.net '+title+' '+artist, function(gErr, gNext, gLinks) {
+    if(gErr || !gLinks[0]) {callback(false); return false;}
+    request(gLinks[0].link, function (error, response, html) {
+      if (!error && response.statusCode == 200) {
+        var ch$ = cheerio.load(html);
+        // Extracting the lyrics
+        var myLyrics = ch$('#lyricBody').text().trim()
+        if(myLyrics) {
+          callback(true, myLyrics.trim());
+        }
+        else {callback(false);}
+      }
+      else {
+        callback(false);
+      }
+    });
+  });
+});
+
+addLyricsProvider("Uta-Net", function(artist, title, callback) {
+  google('site:uta-net.com '+title+' '+artist, function(gErr, gNext, gLinks) {
+    if(gErr || !gLinks[0]) {callback(false); return false;}
+    request(gLinks[0].link, function (error, response, html) {
+      if (!error && response.statusCode == 200) {
+        var ch$ = cheerio.load(html);
+        var svgUrl = ch$('#ipad_kashi').find('img').attr('src');
+        request('http://www.uta-net.com/'+svgUrl, function (error, response, svg) {
+          if (!error && response.statusCode == 200) {
+            var svg$ = cheerio.load(svg);
+            var myLyrics = '';
+            svg$('text').each(function (i, e) {
+              myLyrics += e.children[0].data+"\n"
+            });
+            if(myLyrics) {
+              callback(true, myLyrics.trim());
+            }
+            else {callback(false);}
+          }
+        });
+      }
+      else {
+        callback(false);
+      }
+    });
+  });
+});
+
 module.exports = exports = lyricsProviders;
