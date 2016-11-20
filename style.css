@@ -124,7 +124,7 @@ div#search input:focus {
   font-size: 30px;
   font-style: italic;
   background: whitesmoke;
-  border-bottom-right-radius: 20px;
+  border-bottom-right-radius: 19px;
   border-top-right-radius: 40px;
   border-top: 2px solid gold;
   border-bottom: 2px solid gold;
