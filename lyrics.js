@@ -76,11 +76,16 @@ $(document).keydown(function(evt) {
   }
   if (evt.keyCode == 27) { // Escape
     evt.preventDefault();
-    lyricsDiv.removeClass('editmode');
-    lyricsDiv.removeAttr('contenteditable');
-    var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
-    toggleSearch(false);
-    readLyrics(artist, title);
+    if (lyricsDiv.hasClass('editmode')) {
+      lyricsDiv.removeClass('editmode');
+      lyricsDiv.removeAttr('contenteditable');
+      var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
+      toggleSearch(false);
+      readLyrics(artist, title);
+    }
+    else {
+      win.leaveFullscreen();
+    }
   }
   var tag = evt.target.tagName.toLowerCase();
   if (tag != 'input' && tag != 'textarea' && evt.target.getAttribute('contenteditable') != 'true') {
