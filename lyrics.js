@@ -76,7 +76,7 @@ $(document).keydown(function(evt) {
   }
   if (evt.keyCode == 27) { // Escape
     evt.preventDefault();
-    if (lyricsDiv.hasClass('editmode')) {
+    if (lyricsDiv.hasClass('editmode') || $('#search').is(':visible')) {
       lyricsDiv.removeClass('editmode');
       lyricsDiv.removeAttr('contenteditable');
       var artist = np.artist.replace(/ /g, "_"); var title = np.title.replace(/ /g, "_")
