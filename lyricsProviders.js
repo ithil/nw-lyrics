@@ -8,11 +8,16 @@ function addLyricsProvider(name, func) {
   lyricsProviders[name] = item;
 }
 
-addLyricsProvider("LyricWikia", function(artist, title, callback) {
+function lyricWikia(artist, title, callback) {
   artist = encodeURI(artist.replace(/ /g, "_"));title = encodeURI(title.replace(/ /g, "_"));
   request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
     if (!error && response.statusCode == 200) {
       var ch$ = cheerio.load(html);
+      if(ch$('.redirectText').length) {
+        arr = ch$('.redirectText a').attr('title').split(':');
+        lyricWikia(arr[0], arr[1], callback);
+        return true;
+      }
       if(ch$('ul.categories a[title*="Unlicensed Lyrics"]').length) {
         callback(false); // Abort if lyrics is incomplete/non-existent
         return false;    // due to licensing issues
@@ -29,7 +34,9 @@ addLyricsProvider("LyricWikia", function(artist, title, callback) {
       callback(false);
     }
   });
-});
+}
+
+addLyricsProvider("LyricWikia", lyricWikia);
 
 addLyricsProvider("MetroLyrics", function(artist, title, callback) {
   google('site:metrolyrics.com '+title+' '+artist, function(gErr, gNext, gLinks) {
