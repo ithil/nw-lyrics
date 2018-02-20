@@ -1,5 +1,6 @@
 var itunes = require('playback');
 var fs = require('fs');
+var request = require('request')
 var gui = require('nw.gui');
 var win = gui.Window.get();
 var app = gui.App;
