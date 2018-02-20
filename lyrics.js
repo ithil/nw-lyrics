@@ -102,6 +102,9 @@ $(document).keydown(function(evt) {
     if (String.fromCharCode(evt.keyCode) == "E") {
       editMode();
     }
+    if (String.fromCharCode(evt.keyCode) == "L") {
+      lastFmCurrentSong();
+    }
   };
 });
 
@@ -297,6 +300,17 @@ function getLyrics(artist, title, callback) {
   asyncLoop(lyricsProvidersArr, 0);
 }
 
+function lastFmCurrentSong() {
+  request('http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=USERNAME&api_key=APIKEY&format=json&limit=1', function (error, response, content) {
+    if (!error && response.statusCode == 200) {
+      obj = JSON.parse(content)['recenttracks']['track'][0];
+      artist = obj['artist']['#text'];
+      title = obj['name'];
+      setCurrentTrack(artist, title);
+    }
+  });
+}
+
 function addMenu() {
   var alignLyrics = function (pos) { lyricsDiv.css('text-align', pos); }
   var zoom = function (n) {if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}}
@@ -319,5 +333,6 @@ function addMenu() {
   songMenu.append(new gui.MenuItem({ label: 'Requery Lyrics', click: function() { requeryLyrics(np.artist, np.title); } }));
   songMenu.append(new gui.MenuItem({ label: 'Mark as Instrumental', click: function() { markAsInstrumental(); } }));
   songMenu.append(new gui.MenuItem({ label: 'Web Search', click: function() { webSearch(); } }));
+  songMenu.append(new gui.MenuItem({ label: 'Current Last.FM song', click: function() { lastFmCurrentSong(); } }));
 }
 addMenu();
