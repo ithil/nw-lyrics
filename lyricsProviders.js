@@ -44,12 +44,17 @@ addLyricsProvider("MetroLyrics", function(artist, title, callback) {
     request(gLinks[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
-        // Extracting the lyrics
-        var myLyrics = "";
-        ch$('div#lyrics-body-text p.verse').each(function() {
-          myLyrics = myLyrics.concat(ch$(this).text().trim()+"\n\n");
-        });
-        callback(true, myLyrics.trim());
+        if(ch$('div#lyrics-body-text p.verse').length > 1) {
+          // Extracting the lyrics
+          var myLyrics = "";
+          ch$('div#lyrics-body-text p.verse').each(function() {
+            myLyrics = myLyrics.concat(ch$(this).text().trim()+"\n\n");
+          });
+          callback(true, myLyrics.trim());
+        }
+        else {
+          callback(false);
+        }
       }
       else {
         callback(false);
@@ -107,7 +112,7 @@ addLyricsProvider("LetsSingIt", function(artist, title, callback) {
         // Extracting the lyrics
         var myLyrics = ch$('#lyrics').text().trim()
         if(myLyrics) {
-          
+
           callback(true, myLyrics.trim());
         }
         else {callback(false);}
