@@ -78,6 +78,21 @@ $(document).keydown(function(evt) {
     saveLyrics(np.artist, np.title, lyrics);
     return false;
   }
+  if ((evt.which == '187') && (evt.ctrlKey || evt.metaKey)) // Cmd + +
+  {
+    evt.preventDefault();
+    zoom(1);
+  }
+  if ((evt.which == '189') && (evt.ctrlKey || evt.metaKey)) // Cmd + -
+  {
+    evt.preventDefault();
+    zoom(-1);
+  }
+  if ((evt.which == '48') && (evt.ctrlKey || evt.metaKey)) // Cmd + 0
+  {
+    evt.preventDefault();
+    zoom(0);
+  }
   if ((evt.which == '109' || evt.which == '77' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+M
   {
     evt.preventDefault();
@@ -382,9 +397,14 @@ function lastFmCurrentSong() {
   });
 }
 
+var zoom = function (n) {
+  if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}
+  autoSizeText($('#title')[0]);
+  autoSizeText($('#artist')[0]);
+}
+
 function addMenu() {
   var alignLyrics = function (pos) { lyricsDiv.css('text-align', pos); }
-  var zoom = function (n) {if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}}
   var menubar = new gui.Menu({type: 'menubar'});
   menubar.createMacBuiltin("Lyrics");
   var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu(), songMenu = new gui.Menu();
