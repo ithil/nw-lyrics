@@ -48,8 +48,20 @@ itunes.on('playing', function(data) {
  });
 })
 
-win.on('enter-fullscreen', function() {$("html *").addClass('fullscreen'); lyricsDiv.hide(); setTimeout(function() {lyricsDiv.show();}, 0);});
-win.on('restore', function() {$("html *").removeClass('fullscreen'); lyricsDiv.hide(); setTimeout(function() {lyricsDiv.show();}, 0);});
+win.on('enter-fullscreen', function() {
+  $("html *").addClass('fullscreen');
+  lyricsDiv.hide();
+  $('title').text(np.title + " \u2013 " + np.artist);
+  setTimeout(function() {lyricsDiv.show();}, 0);
+});
+win.on('restore', function() {
+  $("html *").removeClass('fullscreen');
+  $('title').text("Lyrics");
+  lyricsDiv.hide();
+  setTimeout(function() {lyricsDiv.show();}, 0);
+  autoSizeText($('#title')[0]);
+  autoSizeText($('#artist')[0]);
+});
 window.addEventListener('resize', function(event){
   autoSizeText($('#title')[0]);
   autoSizeText($('#artist')[0]);
@@ -208,6 +220,9 @@ function setCurrentTrack(artist, title) {
   NRdiv.hide();
   np.artist = artist; np.title = title;
   setHeader(artist, title);
+  if(win.isFullscreen) {
+    $('title').text(title + " \u2013 " + artist);
+  }
   readLyrics(artist, title, function(succ, lyrics) {
     if (succ) {
       setLyrics(lyrics);
