@@ -96,6 +96,10 @@ $(document).keydown(function(evt) {
       toggleSearch(false);
       readLyrics(artist, title);
     }
+    else if ($('#jumpToWord').is(':visible')) {
+      $('#jumpToWord').val('').blur().hide();
+      $('#lyrics').unhighlight();
+    }
     else {
       win.leaveFullscreen();
     }
@@ -117,6 +121,10 @@ $(document).keydown(function(evt) {
     }
     if (String.fromCharCode(evt.keyCode) == "L") {
       lastFmCurrentSong();
+    }
+    if (String.fromCharCode(evt.keyCode) == "F") {
+      evt.preventDefault();
+      $('#jumpToWord').show().focus();
     }
   };
 });
@@ -181,6 +189,53 @@ function onSearch(e) {
 
 $('#searchArtist').keypress(onSearch);
 $('#searchTitle').keypress(onSearch);
+
+var currentHighlight = 0;
+function onJumpToWord(e) {
+  if (!e) e = window.event;
+  if (e.shiftKey && e.keyCode == '9') { // Shift+Tab
+  }
+  if (e.keyCode == '9') { // Tab
+    if(e.shiftKey) {
+      currentHighlight -= 1;
+    }
+    else {
+      currentHighlight += 1;
+    }
+    numHighlights = $('.highlight').length;
+    if(numHighlights == 0) return;
+    if (currentHighlight >= numHighlights) currentHighlight = 0;
+    if (currentHighlight < 0) currentHighlight = numHighlights - 1;
+    $('html, body').animate({
+      scrollTop: $('.highlight')[currentHighlight].offsetTop
+    }, 200);
+    $('html *').removeClass('currentHighlight');
+    $($('.highlight')[currentHighlight]).addClass('currentHighlight');
+  }
+  else if (e.keyCode == '13') { // Enter
+    $('#jumpToWord').val('').blur().hide();
+    $('#lyrics').unhighlight();
+  }
+  else if (e.keyCode != '27' && e.keyCode != '16') { // Everything but Escape
+    var word = $('#jumpToWord').val();
+    currentHighlight = 0;
+    $('#lyrics').unhighlight();
+    $('#lyrics').highlight(word);
+    if($('.highlight').length > 0) {
+      $('html, body').animate({
+          scrollTop: $('.highlight')[0].offsetTop
+      }, 200);
+    }
+  }
+};
+
+$('#jumpToWord').keyup(onJumpToWord);
+$('#jumpToWord').keydown(function(e) {
+  if (e.keyCode == '9') { // Tab
+    e.preventDefault();
+    e.stopPropagation();
+  }
+})
 
 $('#header').dblclick(function() {
   var aBox = $('#searchArtist');

@@ -4,6 +4,7 @@
     <title>Lyrics</title>
     <link rel="stylesheet" href="style.css">
     <script src="jquery-2.1.3.min.js"></script>
+    <script src="jquery.highlight.js"></script>
 </head>
 <body>
     <div id="header" style="display:none">
@@ -39,7 +40,7 @@
 
     <div id="NoLyricsFound" style="display:none">
         <h2>Lyrics not found!</h2>
-        <p>We couldn't find any lyrics to the current track on <i>lyrics.wikia.com</i>. You can <a href="javascript:void(0)" onclick="editMode();">add it</a> yourself, though!</p>
+        <p>We couldn't find the lyrics for the current track on any of our lyrics providers. But you can <a href="javascript:void(0)" onclick="editMode();">add it</a> yourself!</p>
         </br><button id="websearch" onclick="webSearch();" class="NotFound" type="button">Web search</button>
         </br><button id="instrumental" onclick="markAsInstrumental();" class="NotFound" type="button">Mark as <i>Instrumental</i></button>
     </div>
@@ -50,8 +51,10 @@
         <input placeholder="Title" accesskey="t" id="searchTitle" tabindex="2" autocomplete="off">
     </div>
 
+    <input placeholder="Jump to word" id="jumpToWord" style="display:none">
+
     <div id="lyrics" ondblclick="editMode(true);">
-    
+
     </div>
 
     <script src="./lyrics.js"></script>
