@@ -140,7 +140,7 @@ function markAsInstrumental(artist, title) {
 
 function applyInstrumentalCss() {
   var txt = lyricsDiv.text();
-  if(/(\W+|^)Instrumental/.test(txt)) {;
+  if(/^(\W+|^)Instrumental/.test(txt)) {;
     lyricsDiv.addClass('instrumental');
   }
   else {
