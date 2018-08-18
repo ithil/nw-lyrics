@@ -123,6 +123,26 @@ addLyricsProvider("Musixmatch", function(artist, title, callback) {
   });
 });
 
+addLyricsProvider("Genius", function(artist, title, callback) {
+  google('site:genius.com '+title+' '+artist, function(gErr, gRes) {
+    if(gErr || !gRes.links[0]) {callback(false); return false;}
+    request(gRes.links[0].link, function (error, response, html) {
+      if (!error && response.statusCode == 200) {
+        var ch$ = cheerio.load(html);
+        // Extracting the lyrics
+        var myLyrics = ch$('.lyrics').text().trim()
+        if(myLyrics) {
+          callback(true, myLyrics.trim());
+        }
+        else {callback(false);}
+      }
+      else {
+        callback(false);
+      }
+    });
+  });
+});
+
 addLyricsProvider("LetsSingIt", function(artist, title, callback) {
   google('site:letssingit.com '+title+' '+artist, function(gErr, gRes) {
     if(gErr || !gRes.links[0]) {callback(false); return false;}
