@@ -39,9 +39,9 @@ function lyricWikia(artist, title, callback) {
 addLyricsProvider("LyricWikia", lyricWikia);
 
 addLyricsProvider("MetroLyrics", function(artist, title, callback) {
-  google('site:metrolyrics.com '+title+' '+artist, function(gErr, gNext, gLinks) {
-    if(gErr || !gLinks[0]) {callback(false); return false;}
-    request(gLinks[0].link, function (error, response, html) {
+  google('site:metrolyrics.com '+title+' '+artist, function(gErr, gRes) {
+    if(gErr || !gRes.links[0]) {callback(false); return false;}
+    request(gRes.links[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         if(ch$('div#lyrics-body-text p.verse').length > 1) {
@@ -64,9 +64,9 @@ addLyricsProvider("MetroLyrics", function(artist, title, callback) {
 });
 
 addLyricsProvider("AZLyrics", function(artist, title, callback) {
-  google('site:azlyrics.com '+title+' '+artist, function(gErr, gNext, gLinks) {
-    if(gErr || !gLinks[0]) {callback(false); return false;}
-    request(gLinks[0].link, function (error, response, html) {
+  google('site:azlyrics.com '+title+' '+artist, function(gErr, gRes) {
+    if(gErr || !gRes.links[0]) {callback(false); return false;}
+    request(gRes.links[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -84,9 +84,9 @@ addLyricsProvider("AZLyrics", function(artist, title, callback) {
 });
 
 addLyricsProvider("Songtexte.com", function(artist, title, callback) {
-  google('site:songtexte.com '+title+' '+artist, function(gErr, gNext, gLinks) {
-    if(gErr || !gLinks[0]) {callback(false); return false;}
-    request(gLinks[0].link, function (error, response, html) {
+  google('site:songtexte.com '+title+' '+artist, function(gErr, gRes) {
+    if(gErr || !gRes.links[0]) {callback(false); return false;}
+    request(gRes.links[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -104,9 +104,9 @@ addLyricsProvider("Songtexte.com", function(artist, title, callback) {
 });
 
 addLyricsProvider("LetsSingIt", function(artist, title, callback) {
-  google('site:letssingit.com '+title+' '+artist, function(gErr, gNext, gLinks) {
-    if(gErr || !gLinks[0]) {callback(false); return false;}
-    request(gLinks[0].link, function (error, response, html) {
+  google('site:letssingit.com '+title+' '+artist, function(gErr, gRes) {
+    if(gErr || !gRes.links[0]) {callback(false); return false;}
+    request(gRes.links[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -125,9 +125,9 @@ addLyricsProvider("LetsSingIt", function(artist, title, callback) {
 });
 
 addLyricsProvider("J-Lyrics.net", function(artist, title, callback) {
-  google('site:j-lyric.net '+title+' '+artist, function(gErr, gNext, gLinks) {
-    if(gErr || !gLinks[0]) {callback(false); return false;}
-    request(gLinks[0].link, function (error, response, html) {
+  google('site:j-lyric.net '+title+' '+artist, function(gErr, gRes) {
+    if(gErr || !gRes.links[0]) {callback(false); return false;}
+    request(gRes.links[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -145,9 +145,9 @@ addLyricsProvider("J-Lyrics.net", function(artist, title, callback) {
 });
 
 addLyricsProvider("Uta-Net", function(artist, title, callback) {
-  google('site:uta-net.com '+title+' '+artist, function(gErr, gNext, gLinks) {
-    if(gErr || !gLinks[0]) {callback(false); return false;}
-    request(gLinks[0].link, function (error, response, html) {
+  google('site:uta-net.com '+title+' '+artist, function(gErr, gRes) {
+    if(gErr || !gRes.links[0]) {callback(false); return false;}
+    request(gRes.links[0].link, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         var svgUrl = ch$('#ipad_kashi').find('img').attr('src');
