@@ -91,7 +91,7 @@ addLyricsProvider("Songtexte.com", function(artist, title, callback) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
         var myLyrics = ch$('#lyrics').text().trim()
-        if(myLyrics) {
+        if(myLyrics && !(myLyrics.includes('Leider kein Songtext vorhanden.'))) { // Dirty but necessary
           callback(true, myLyrics.trim());
         }
         else {callback(false);}
