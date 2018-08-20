@@ -45,6 +45,19 @@ div#lyrics.fullscreen {
   color: #fff;
 }
 
+div#lyrics .highlight {
+  background-color: rgb(245, 213, 115);
+  border-radius: 4px;
+}
+
+div#lyrics .highlight.currentHighlight {
+  background-color: rgb(245, 157, 115);
+}
+
+div#lyrics.fullscreen .highlight {
+  color: black;
+}
+
 .editmode {
   border: 5px dashed rgba(0,0,0,0.2);
 }
@@ -90,6 +103,29 @@ div#search input {
 div#search input:focus {
     border-color: cornflowerblue;
     outline: none;
+}
+
+#jumpToWord {
+  bottom: 0px;
+  left: 2%;
+  width: 40%;
+  position: fixed;
+  font-size: 13px;
+  border: none;
+  background: none;
+  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+}
+
+#jumpToWord.fullscreen {
+  color: white;
+  font-size: 20px;
+  left: 1%;
+  bottom: 2%;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+#jumpToWord:focus {
+  outline: none;
 }
 
 #iTunesNotRunning {
