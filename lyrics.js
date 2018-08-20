@@ -141,6 +141,18 @@ $(document).keydown(function(evt) {
       evt.preventDefault();
       $('#jumpToWord').show().focus();
     }
+    if (String.fromCharCode(evt.keyCode) == "G" && evt.shiftKey) {
+      // Scroll to top
+      $('html, body').animate({
+        scrollTop: $(document).height()
+      }, 200);
+    }
+    else if (String.fromCharCode(evt.keyCode) == "G") {
+      // Scroll to top
+      $('html, body').animate({
+        scrollTop: 0
+      }, 200);
+    }
   };
 });
 
