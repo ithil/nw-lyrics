@@ -16,14 +16,16 @@
     "min_height": 220
   },
   "license": "MIT",
-  "os": [ "darwin" ],
+  "os": [
+    "darwin"
+  ],
   "dependencies": {
-    "playback":"",  
-    "cheerio":"",  
-    "request":"",
-    "google":""  
+    "cheerio": "^1.0.0-rc.2",
+    "google": "^2.1.0",
+    "playback": "",
+    "request": "^2.83.0"
   },
-  "repository" :{ 
+  "repository": {
     "type": "git",
     "url": "http://github.com/ithil/nw-lyrics.git"
   },
