@@ -26,6 +26,7 @@ function lyricWikia(artist, title, callback) {
       lyricBox = ch$('div.lyricbox');
       lyricBox.find('div.rtMatcher').remove(); // Removing ads
       lyricBox.find('script').remove();
+      lyricBox.find('noscript').remove();
       lyricBox.find('br').each(function(i,e) { ch$(this).replaceWith("\n")}); // Adding newlines
       myLyrics = lyricBox.text().trim();  // Removing trailing newlines
       callback(true, myLyrics);
