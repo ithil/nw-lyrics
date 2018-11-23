@@ -1,6 +1,7 @@
 var itunes = require('playback');
 var fs = require('fs');
 var request = require('request')
+var google = require('google');
 var gui = require('nw.gui');
 var win = gui.Window.get();
 var app = gui.App;
@@ -100,6 +101,17 @@ $(document).keydown(function(evt) {
     var title = np.title;
     var query = artist + ' ' + title;
     gui.Shell.openExternal('http://songmeanings.com/query/?query='+encodeURIComponent(query));
+    return false;
+  }
+  if ((evt.which == '109' || evt.which == '71' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+G
+  {
+    evt.preventDefault();
+    var artist = np.artist;
+    var title = np.title;
+    google('site:genius.com '+title+' '+artist, function(gErr, gNext, gLinks) {
+      if(gErr || !gLinks[0]) {return false;}
+      gui.Shell.openExternal(gLinks[0].link);
+    });
     return false;
   }
   if (evt.keyCode == 27) { // Escape
