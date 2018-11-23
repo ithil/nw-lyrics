@@ -2,6 +2,7 @@ var itunes = require('playback');
 var fs = require('fs');
 var request = require('request')
 var google = require('google');
+var osascript = require('node-osascript');
 var gui = require('nw.gui');
 var win = gui.Window.get();
 var app = gui.App;
@@ -421,6 +422,17 @@ function lastFmCurrentSong() {
   });
 }
 
+function spotifyCurrentSong() {
+  osascript.execute('tell application "Spotify" to set mytrack to name of current track as string\ntell application "Spotify" to set myartist to artist of current track as string\n{artist:myartist, track:mytrack}',
+  function(err, result, raw) {
+    if (err) return console.error(err);
+    if (result.artist && result.track) {
+      setCurrentTrack(result.artist, result.track);
+    }
+  }
+  );
+}
+
 var zoom = function (n) {
   if(n==0) {win.zoomLevel=0} else {win.zoomLevel = win.zoomLevel + n}
   autoSizeText($('#title')[0]);
@@ -449,5 +461,6 @@ function addMenu() {
   songMenu.append(new gui.MenuItem({ label: 'Mark as Instrumental', click: function() { markAsInstrumental(); } }));
   songMenu.append(new gui.MenuItem({ label: 'Web Search', click: function() { webSearch(); } }));
   songMenu.append(new gui.MenuItem({ label: 'Current Last.FM song', click: function() { lastFmCurrentSong(); } }));
+  songMenu.append(new gui.MenuItem({ label: 'Current Spotify song', click: function() { spotifyCurrentSong(); } }));
 }
 addMenu();
