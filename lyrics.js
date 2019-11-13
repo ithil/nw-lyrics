@@ -1,3 +1,6 @@
+const Configstore = require('configstore');
+const config = new Configstore("nw-lyrics");
+
 var itunes = require('playback');
 var fs = require('fs');
 var request = require('request')
