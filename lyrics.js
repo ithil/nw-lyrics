@@ -32,6 +32,7 @@ win.on('close', function(event) {
     win.close(true);
   }
   else{
+    this.leaveFullscreen();
     this.hide();
   }
 });
@@ -42,6 +43,7 @@ itunes.on('playing', function(data) {
     lyricsDiv.hide();
     headerDiv.hide();
     loaderDiv.hide();
+    lastFmCurrentSong();
     return;
  }
  if(forceRefresh) {setCurrentTrack(data.artist, data.title); forceRefresh=false;}
@@ -145,7 +147,7 @@ $(document).keydown(function(evt) {
       toggleSearch();
     }
     if (String.fromCharCode(evt.keyCode) == "E") {
-      editMode();
+      editMode(true);
     }
     if (String.fromCharCode(evt.keyCode) == "L") {
       lastFmCurrentSong();
