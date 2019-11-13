@@ -1,7 +1,7 @@
 var itunes = require('playback');
 var fs = require('fs');
 var request = require('request')
-var google = require('google');
+var ddg = require('node-ddg').default;
 var osascript = require('node-osascript');
 var gui = require('nw.gui');
 var win = gui.Window.get();
@@ -111,9 +111,9 @@ $(document).keydown(function(evt) {
     evt.preventDefault();
     var artist = np.artist;
     var title = np.title;
-    google('site:genius.com '+title+' '+artist, function(gErr, gNext, gLinks) {
-      if(gErr || !gLinks[0]) {return false;}
-      gui.Shell.openExternal(gLinks[0].link);
+    ddg({query:'site:genius.com '+title+' '+artist, maxResults: 3}).then(function(results) {
+      if(results.length < 1) {callback(false); return(false)}
+      gui.Shell.openExternal(results[0].url);
     });
     return false;
   }

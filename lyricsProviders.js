@@ -1,6 +1,6 @@
 var request = require('request');
 var cheerio = require('cheerio');
-var google = require('google');
+var ddg = require('node-ddg').default;
 var lyricsProviders = new Object();
 
 function addLyricsProvider(name, func) {
@@ -39,10 +39,30 @@ function lyricWikia(artist, title, callback) {
 
 addLyricsProvider("LyricWikia", lyricWikia);
 
+addLyricsProvider("Genius", function(artist, title, callback) {
+  ddg({query:'site:genius.com '+title+' '+artist, maxResults: 3}).then(function(results) {
+    if(results.length < 1) {callback(false); return(false)}
+    request(results[0].url, function (error, response, html) {
+      if (!error && response.statusCode == 200) {
+        var ch$ = cheerio.load(html);
+        // Extracting the lyrics
+        var myLyrics = ch$('.lyrics').text().trim()
+        if(myLyrics) {
+          callback(true, myLyrics.trim());
+        }
+        else {callback(false);}
+      }
+      else {
+        callback(false);
+      }
+    });
+  });
+});
+
 addLyricsProvider("MetroLyrics", function(artist, title, callback) {
-  google('site:metrolyrics.com '+title+' '+artist, function(gErr, gRes) {
-    if(gErr || !gRes.links[0]) {callback(false); return false;}
-    request(gRes.links[0].link, function (error, response, html) {
+  ddg({query:'site:metrolyrics.com '+title+' '+artist, maxResults: 3}).then(function(results) {
+    if(results.length < 1) {callback(false); return(false)}
+    request(results[0].url, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         if(ch$('div#lyrics-body-text p.verse').length > 1) {
@@ -65,9 +85,9 @@ addLyricsProvider("MetroLyrics", function(artist, title, callback) {
 });
 
 addLyricsProvider("AZLyrics", function(artist, title, callback) {
-  google('site:azlyrics.com '+title+' '+artist, function(gErr, gRes) {
-    if(gErr || !gRes.links[0]) {callback(false); return false;}
-    request(gRes.links[0].link, function (error, response, html) {
+  ddg({query:'site:azlyrics.com '+title+' '+artist, maxResults: 3}).then(function(results) {
+    if(results.length < 1) {callback(false); return(false)}
+    request(results[0].url, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -85,9 +105,9 @@ addLyricsProvider("AZLyrics", function(artist, title, callback) {
 });
 
 addLyricsProvider("Songtexte.com", function(artist, title, callback) {
-  google('site:songtexte.com '+title+' '+artist, function(gErr, gRes) {
-    if(gErr || !gRes.links[0]) {callback(false); return false;}
-    request(gRes.links[0].link, function (error, response, html) {
+  ddg({query:'site:songtexte.com '+title+' '+artist, maxResults: 3}).then(function(results) {
+    if(results.length < 1) {callback(false); return(false)}
+    request(results[0].url, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -105,9 +125,9 @@ addLyricsProvider("Songtexte.com", function(artist, title, callback) {
 });
 
 addLyricsProvider("Musixmatch", function(artist, title, callback) {
-  google('site:musixmatch.com '+title+' '+artist, function(gErr, gRes) {
-    if(gErr || !gRes.links[0]) {callback(false); return false;}
-    request(gRes.links[0].link, function (error, response, html) {
+  ddg({query:'site:musixmatch.com '+title+' '+artist, maxResults: 3}).then(function(results) {
+    if(results.length < 1) {callback(false); return(false)}
+    request(results[0].url, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -124,30 +144,10 @@ addLyricsProvider("Musixmatch", function(artist, title, callback) {
   });
 });
 
-addLyricsProvider("Genius", function(artist, title, callback) {
-  google('site:genius.com '+title+' '+artist, function(gErr, gRes) {
-    if(gErr || !gRes.links[0]) {callback(false); return false;}
-    request(gRes.links[0].link, function (error, response, html) {
-      if (!error && response.statusCode == 200) {
-        var ch$ = cheerio.load(html);
-        // Extracting the lyrics
-        var myLyrics = ch$('.lyrics').text().trim()
-        if(myLyrics) {
-          callback(true, myLyrics.trim());
-        }
-        else {callback(false);}
-      }
-      else {
-        callback(false);
-      }
-    });
-  });
-});
-
 addLyricsProvider("LetsSingIt", function(artist, title, callback) {
-  google('site:letssingit.com '+title+' '+artist, function(gErr, gRes) {
-    if(gErr || !gRes.links[0]) {callback(false); return false;}
-    request(gRes.links[0].link, function (error, response, html) {
+  ddg({query:'site:letssingit.com '+title+' '+artist, maxResults: 3}).then(function(results) {
+    if(results.length < 1) {callback(false); return(false)}
+    request(results[0].url, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -166,9 +166,9 @@ addLyricsProvider("LetsSingIt", function(artist, title, callback) {
 });
 
 addLyricsProvider("J-Lyrics.net", function(artist, title, callback) {
-  google('site:j-lyric.net '+title+' '+artist, function(gErr, gRes) {
-    if(gErr || !gRes.links[0]) {callback(false); return false;}
-    request(gRes.links[0].link, function (error, response, html) {
+  ddg({query:'site:j-lyric.net '+title+' '+artist, maxResults: 3}).then(function(results) {
+    if(results.length < 1) {callback(false); return(false)}
+    request(results[0].url, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         // Extracting the lyrics
@@ -186,9 +186,9 @@ addLyricsProvider("J-Lyrics.net", function(artist, title, callback) {
 });
 
 addLyricsProvider("Uta-Net", function(artist, title, callback) {
-  google('site:uta-net.com '+title+' '+artist, function(gErr, gRes) {
-    if(gErr || !gRes.links[0]) {callback(false); return false;}
-    request(gRes.links[0].link, function (error, response, html) {
+  ddg({query:'site:uta-net.com '+title+' '+artist, maxResults: 3}).then(function(results) {
+    if(results.length < 1) {callback(false); return(false)}
+    request(results[0].url, function (error, response, html) {
       if (!error && response.statusCode == 200) {
         var ch$ = cheerio.load(html);
         var svgUrl = ch$('#ipad_kashi').find('img').attr('src');
