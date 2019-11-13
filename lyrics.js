@@ -417,7 +417,7 @@ function getLyrics(artist, title, callback) {
 }
 
 function lastFmCurrentSong() {
-  request('http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=USERNAME&api_key=APIKEY&format=json&limit=1', function (error, response, content) {
+  request('http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user='+config.get('lastfm.user')+'&api_key='+config.get('lastfm.api_key')+'&format=json&limit=1', function (error, response, content) {
     if (!error && response.statusCode == 200) {
       obj = JSON.parse(content)['recenttracks']['track'][0];
       artist = obj['artist']['#text'];
