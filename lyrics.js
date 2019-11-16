@@ -160,7 +160,7 @@ $(document).keydown(function(evt) {
       $('#jumpToWord').show().focus();
     }
     if (String.fromCharCode(evt.keyCode) == "G" && evt.shiftKey) {
-      // Scroll to top
+      // Scroll to bottom
       $('html, body').animate({
         scrollTop: $(document).height()
       }, 200);
