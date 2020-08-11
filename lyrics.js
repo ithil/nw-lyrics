@@ -31,6 +31,7 @@ $(document).ready(function() {
  headerDiv = $('#header');
  loaderDiv = $('#loader');
  noLyricsDiv = $('#NoLyricsFound');
+ win.zoomLevel = parseInt(config.get('window.zoomLevel') || 0);
  getNowPlaying();
 });
 
@@ -90,6 +91,10 @@ win.on('restore', function() {
 window.addEventListener('resize', function(event){
   autoSizeText($('#title')[0]);
   autoSizeText($('#artist')[0]);
+});
+
+win.on('zoom', function(level) {
+  config.set('window.zoomLevel', level);
 });
 
 $(document).keydown(function(evt) {
