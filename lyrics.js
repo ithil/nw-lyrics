@@ -3,9 +3,7 @@ const config = new Configstore("nw-lyrics");
 
 var fs = require('fs');
 const { exec } = require('child_process');
-var request = require('request')
 var ddg = require('node-ddg').default;
-var osascript = require('node-osascript');
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify({
   id: config.get('spotify.credentials.id'),
@@ -107,41 +105,6 @@ $(document).keydown(function(evt) {
     var lyrics = lyricsDiv[0].innerText;
     applyInstrumentalCss();
     saveLyrics(np.artist, np.title, lyrics);
-    return false;
-  }
-  if ((evt.which == '187') && (evt.ctrlKey || evt.metaKey)) // Cmd + +
-  {
-    evt.preventDefault();
-    zoom(1);
-  }
-  if ((evt.which == '189') && (evt.ctrlKey || evt.metaKey)) // Cmd + -
-  {
-    evt.preventDefault();
-    zoom(-1);
-  }
-  if ((evt.which == '48') && (evt.ctrlKey || evt.metaKey)) // Cmd + 0
-  {
-    evt.preventDefault();
-    zoom(0);
-  }
-  if ((evt.which == '109' || evt.which == '77' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+M
-  {
-    evt.preventDefault();
-    var artist = np.artist;
-    var title = np.title;
-    var query = artist + ' ' + title;
-    gui.Shell.openExternal('http://songmeanings.com/query/?query='+encodeURIComponent(query));
-    return false;
-  }
-  if ((evt.which == '109' || evt.which == '71' ) && (evt.ctrlKey || evt.metaKey)) // Cmd+G
-  {
-    evt.preventDefault();
-    var artist = np.artist;
-    var title = np.title;
-    ddg({query:'site:genius.com '+title+' '+artist, maxResults: 3}).then(function(results) {
-      if(results.length < 1) {callback(false); return(false)}
-      gui.Shell.openExternal(results[0].url);
-    });
     return false;
   }
   if (evt.keyCode == 27) { // Escape
@@ -494,14 +457,60 @@ function addMenu() {
   }));
   // Zoom menu
   win.menu.insert(new gui.MenuItem({ label: 'Zoom', submenu: zoomMenu }), 3);
-  zoomMenu.append(new gui.MenuItem({ label: 'Zoom In', click: function() { zoom(1); } }));
-  zoomMenu.append(new gui.MenuItem({ label: 'Zoom out', click: function() { zoom(-1); } }));
-  zoomMenu.append(new gui.MenuItem({ label: 'Reset Zoom', click: function() { zoom(0); } }));
+  zoomMenu.append(new gui.MenuItem({
+    label: 'Zoom In',
+    key: '+',
+    modifiers: 'cmd',
+    click: function() { zoom(1); }
+  }));
+  zoomMenu.append(new gui.MenuItem({
+    label: 'Zoom Out',
+    key: '-',
+    modifiers: 'cmd',
+    click: function() { zoom(-1); }
+  }));
+  zoomMenu.append(new gui.MenuItem({
+    label: 'Reset Zoom',
+    key: '0',
+    modifiers: 'cmd',
+    click: function() { zoom(0); }
+  }));
   // Song menu
   win.menu.insert(new gui.MenuItem({ label: 'Song', submenu: songMenu }), 4);
   songMenu.append(new gui.MenuItem({ label: 'Requery Lyrics', click: function() { requeryLyrics(np.artist, np.title); } }));
-  songMenu.append(new gui.MenuItem({ label: 'Mark as Instrumental', click: function() { markAsInstrumental(); } }));
-  songMenu.append(new gui.MenuItem({ label: 'Web Search', click: function() { webSearch(); } }));
+  songMenu.append(new gui.MenuItem({
+    label: 'Mark as Instrumental',
+    key: 'i',
+    modifiers: 'ctrl',
+    click: function() { markAsInstrumental(); }
+  }));
+  songMenu.append(new gui.MenuItem({
+    label: 'Web Search',
+    key: 'w',
+    modifiers: 'ctrl',
+    click: function() { webSearch(); }
+  }));
+  songMenu.append(new gui.MenuItem({ type: 'separator' }));
+  songMenu.append(new gui.MenuItem({
+    label: 'SongMeanings',
+    key: 'm',
+    modifiers: 'ctrl',
+    click: function() {
+      var query = np.artist + ' ' + np.title;
+      gui.Shell.openExternal('http://songmeanings.com/query/?query='+encodeURIComponent(query));
+    }
+  }));
+  songMenu.append(new gui.MenuItem({
+    label: 'Genius',
+    key: 'g',
+    modifiers: 'cmd',
+    click: function() {
+      ddg({query:'site:genius.com '+np.title+' '+np.artist, maxResults: 3}).then(function(results) {
+        if(results.length < 1) {callback(false); return(false)}
+        gui.Shell.openExternal(results[0].url);
+      });
+    }
+  }));
   // Now Playing menu
   win.menu.insert(new gui.MenuItem({ label: 'Now Playing', submenu: npMenu }), 5);
   for (var name in npProviders) {
