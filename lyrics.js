@@ -511,6 +511,15 @@ function addMenu() {
       });
     }
   }));
+  songMenu.append(new gui.MenuItem({
+    label: 'WhoSampled',
+    key: 's',
+    modifiers: 'ctrl',
+    click: function() {
+      var query = np.artist + ' ' + np.title;
+      gui.Shell.openExternal('https://www.whosampled.com/search/?q='+encodeURIComponent(query));
+    }
+  }));
   // Now Playing menu
   win.menu.insert(new gui.MenuItem({ label: 'Now Playing', submenu: npMenu }), 5);
   for (var name in npProviders) {
