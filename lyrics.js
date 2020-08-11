@@ -520,6 +520,25 @@ function addMenu() {
       gui.Shell.openExternal('https://www.whosampled.com/search/?q='+encodeURIComponent(query));
     }
   }));
+  songMenu.append(new gui.MenuItem({ type: 'separator' }));
+  songMenu.append(new gui.MenuItem({
+    label: 'Wikipedia Artist',
+    click: function() {
+      gui.Shell.openExternal('https://en.wikipedia.org/wiki/Special:Search/'+encodeURIComponent(np.artist));
+    }
+  }));
+  songMenu.append(new gui.MenuItem({
+    label: 'Last.fm Artist',
+    click: function() {
+      gui.Shell.openExternal('https://www.last.fm/music/'+np.artist.replace(/ /g, '+'));
+    }
+  }));
+  songMenu.append(new gui.MenuItem({
+    label: 'Last.fm Track',
+    click: function() {
+      gui.Shell.openExternal('https://www.last.fm/music/'+np.artist.replace(/ /g, '+')+'/_/'+np.title.replace(/ /g, '+'));
+    }
+  }));
   // Now Playing menu
   win.menu.insert(new gui.MenuItem({ label: 'Now Playing', submenu: npMenu }), 5);
   for (var name in npProviders) {
