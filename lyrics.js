@@ -477,7 +477,6 @@ function addMenu() {
       checked: config.get('nowplaying.default') == name,
       label: name,
       click: function() {
-        console.log(this.label);
         config.set('nowplaying.default', this.label);
         uncheckNPItems();
         this.checked = true;
