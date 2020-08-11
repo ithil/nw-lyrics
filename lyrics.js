@@ -32,6 +32,7 @@ $(document).ready(function() {
  loaderDiv = $('#loader');
  noLyricsDiv = $('#NoLyricsFound');
  win.zoomLevel = parseInt(config.get('window.zoomLevel') || 0);
+ lyricsDiv.css('text-align', config.get('text.align') || 'center');
  getNowPlaying();
 });
 
@@ -449,16 +450,48 @@ var zoom = function (n) {
 }
 
 function addMenu() {
-  var alignLyrics = function (pos) { lyricsDiv.css('text-align', pos); }
+  var alignLyrics = function (pos) { lyricsDiv.css('text-align', pos); config.set('text.align', pos); }
+  var uncheckItems = function(menuNumber) {
+    for (var item of win.menu.items[menuNumber].submenu.items) {
+      item.checked = false;
+    }
+  }
   var menubar = new gui.Menu({type: 'menubar'});
   menubar.createMacBuiltin("Lyrics");
   var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu(), songMenu = new gui.Menu(), npMenu = new gui.Menu();
   win.menu = menubar;
   // Align menu
   win.menu.insert(new gui.MenuItem({ label: 'Align', submenu: alignMenu }), 2);
-  alignMenu.append(new gui.MenuItem({ label: 'Left', click: function() { alignLyrics('left'); } }));
-  alignMenu.append(new gui.MenuItem({ label: 'Center', click: function() { alignLyrics('center'); } }));
-  alignMenu.append(new gui.MenuItem({ label: 'Right', click: function() { alignLyrics('right'); } }));
+  alignMenu.append(new gui.MenuItem({
+    type: 'checkbox',
+    checked: config.get('text.align') == 'left',
+    label: 'Left',
+    click: function() {
+      alignLyrics('left');
+      uncheckItems(2);
+      this.checked = true;
+    }
+  }));
+  alignMenu.append(new gui.MenuItem({
+    type: 'checkbox',
+    checked: config.get('text.align') == 'center',
+    label: 'Center',
+    click: function() {
+      alignLyrics('center');
+      uncheckItems(2);
+      this.checked = true;
+    }
+  }));
+  alignMenu.append(new gui.MenuItem({
+    type: 'checkbox',
+    checked: config.get('text.align') == 'right',
+    label: 'Right',
+    click: function() {
+      alignLyrics('right');
+      uncheckItems(2);
+      this.checked = true;
+    }
+  }));
   // Zoom menu
   win.menu.insert(new gui.MenuItem({ label: 'Zoom', submenu: zoomMenu }), 3);
   zoomMenu.append(new gui.MenuItem({ label: 'Zoom In', click: function() { zoom(1); } }));
@@ -471,11 +504,6 @@ function addMenu() {
   songMenu.append(new gui.MenuItem({ label: 'Web Search', click: function() { webSearch(); } }));
   // Now Playing menu
   win.menu.insert(new gui.MenuItem({ label: 'Now Playing', submenu: npMenu }), 5);
-  var uncheckNPItems = function() {
-    for (var item of win.menu.items[5].submenu.items) {
-      item.checked = false;
-    }
-  }
   for (var name in npProviders) {
     npMenu.append(new gui.MenuItem({
       type: 'checkbox',
@@ -483,7 +511,7 @@ function addMenu() {
       label: name,
       click: function() {
         config.set('nowplaying.default', this.label);
-        uncheckNPItems();
+        uncheckItems(5);
         this.checked = true;
       }
     }));
