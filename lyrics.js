@@ -3,9 +3,15 @@ const config = new Configstore("nw-lyrics");
 
 var itunes = require('playback');
 var fs = require('fs');
+const { exec } = require('child_process');
 var request = require('request')
 var ddg = require('node-ddg').default;
 var osascript = require('node-osascript');
+var Spotify = require('node-spotify-api');
+var spotify = new Spotify({
+  id: config.get('spotify.credentials.id'),
+  secret: config.get('spotify.credentials.secret')
+});
 var gui = require('nw.gui');
 var win = gui.Window.get();
 var app = gui.App;
@@ -40,6 +46,35 @@ win.on('close', function(event) {
   }
 });
 app.on('reopen', function() {win.show(); win.focus()})
+
+app.on('open', function(droppedContent) {
+  var spotifyPattern = new RegExp('open.spotify.com/track/([^?/]+)');
+  var ytPattern = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+  var links = droppedContent.split(RegExp('https?://'));
+  if (links[1]) {
+    var match = links[1].match(spotifyPattern);
+    if (match && match[1]) {
+      spotify.request('https://api.spotify.com/v1/tracks/'+match[1])
+      .then(function(data) {
+        setCurrentTrack(data.artists[0].name, data.name)})
+      .catch(function(err) {console.log(err)});
+    }
+    else if (links[1].match(ytPattern)) {
+      exec('/usr/local/bin/youtube-dl -j "https://'+links[1]+'"', (err, stdout, stderr) => {
+        if (err) {
+          console.error('Error: '+stderr);
+        }
+        else {
+          video = JSON.parse(stdout);
+          if(video.artist && video.track) {
+            setCurrentTrack(video.artist, video.track);
+          }
+        }
+      });
+    }
+  }
+});
+
 itunes.on('playing', function(data) {
  if(!data) {
     NRdiv.show();

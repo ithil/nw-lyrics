@@ -99,5 +99,21 @@
 			</dict>
 		</dict>
 	</array>
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+			</array>
+			<key>NSMessage</key>
+			<string>droppedText</string>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Text Drop</string>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

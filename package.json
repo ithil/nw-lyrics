@@ -25,6 +25,7 @@
     "google": "^2.1.0",
     "node-ddg": "^2.2.0",
     "node-osascript": "^2.0.0",
+    "node-spotify-api": "^1.1.1",
     "playback": "",
     "request": "^2.83.0"
   },
