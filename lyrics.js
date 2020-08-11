@@ -1,7 +1,6 @@
 const Configstore = require('configstore');
 const config = new Configstore("nw-lyrics");
 
-var itunes = require('playback');
 var fs = require('fs');
 const { exec } = require('child_process');
 var request = require('request')
@@ -24,16 +23,15 @@ var lyricsProviders = (function() {
   });
   return arr;
 })();
+var npProviders = require('./nowPlayingProviders.js');
 var lyrics_dir = process.env['HOME']+'/.lyrics';
-forceRefresh = false;
 
 $(document).ready(function() {
- NRdiv = $('#iTunesNotRunning');
  lyricsDiv = $('#lyrics');
  headerDiv = $('#header');
  loaderDiv = $('#loader');
  noLyricsDiv = $('#NoLyricsFound');
- itunes.currentTrack();
+ getNowPlaying();
 });
 
 win.on('close', function(event) {
@@ -74,21 +72,6 @@ app.on('open', function(droppedContent) {
     }
   }
 });
-
-itunes.on('playing', function(data) {
- if(!data) {
-    NRdiv.show();
-    lyricsDiv.hide();
-    headerDiv.hide();
-    loaderDiv.hide();
-    lastFmCurrentSong();
-    return;
- }
- if(forceRefresh) {setCurrentTrack(data.artist, data.title); forceRefresh=false;}
- checkIfNewSong(data.artist, data.name, function (artist, title) {
-   setCurrentTrack(artist, title);
- });
-})
 
 win.on('enter-fullscreen', function() {
   $("html *").addClass('fullscreen');
@@ -175,8 +158,7 @@ $(document).keydown(function(evt) {
   var tag = evt.target.tagName.toLowerCase();
   if (tag != 'input' && tag != 'textarea' && evt.target.getAttribute('contenteditable') != 'true') {
     if (String.fromCharCode(evt.keyCode) == "R") {
-      forceRefresh = true;
-      itunes.currentTrack();
+      getNowPlaying();
     }
     if (String.fromCharCode(evt.keyCode) == "D") {
       require('nw.gui').Window.get().showDevTools()
@@ -186,9 +168,6 @@ $(document).keydown(function(evt) {
     }
     if (String.fromCharCode(evt.keyCode) == "E") {
       editMode(true);
-    }
-    if (String.fromCharCode(evt.keyCode) == "L") {
-      lastFmCurrentSong();
     }
     if (String.fromCharCode(evt.keyCode) == "F") {
       evt.preventDefault();
@@ -352,7 +331,6 @@ function checkIfNewSong(artist, title, callback) {
 function setCurrentTrack(artist, title) {
   lyricsDiv.hide();
   loaderDiv.show();
-  NRdiv.hide();
   np.artist = artist; np.title = title;
   setHeader(artist, title);
   if(win.isFullscreen) {
@@ -451,26 +429,12 @@ function getLyrics(artist, title, callback) {
   asyncLoop(lyricsProvidersArr, 0);
 }
 
-function lastFmCurrentSong() {
-  request('http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user='+config.get('lastfm.user')+'&api_key='+config.get('lastfm.api_key')+'&format=json&limit=1', function (error, response, content) {
-    if (!error && response.statusCode == 200) {
-      obj = JSON.parse(content)['recenttracks']['track'][0];
-      artist = obj['artist']['#text'];
-      title = obj['name'];
-      setCurrentTrack(artist, title);
-    }
-  });
-}
-
-function spotifyCurrentSong() {
-  osascript.execute('tell application "Spotify" to set mytrack to name of current track as string\ntell application "Spotify" to set myartist to artist of current track as string\n{artist:myartist, track:mytrack}',
-  function(err, result, raw) {
-    if (err) return console.error(err);
-    if (result.artist && result.track) {
-      setCurrentTrack(result.artist, result.track);
-    }
-  }
-  );
+function getNowPlaying() {
+  var defaultNP = config.get('nowplaying.default');
+  var provider = defaultNP ? npProviders[defaultNP]  : npProviders[Object.keys(npProviders)[0]]
+  provider.func({ config: config }, function(artist, title) {
+    setCurrentTrack(artist, title)
+  })
 }
 
 var zoom = function (n) {
@@ -483,7 +447,7 @@ function addMenu() {
   var alignLyrics = function (pos) { lyricsDiv.css('text-align', pos); }
   var menubar = new gui.Menu({type: 'menubar'});
   menubar.createMacBuiltin("Lyrics");
-  var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu(), songMenu = new gui.Menu();
+  var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu(), songMenu = new gui.Menu(), npMenu = new gui.Menu();
   win.menu = menubar;
   // Align menu
   win.menu.insert(new gui.MenuItem({ label: 'Align', submenu: alignMenu }), 2);
@@ -500,7 +464,25 @@ function addMenu() {
   songMenu.append(new gui.MenuItem({ label: 'Requery Lyrics', click: function() { requeryLyrics(np.artist, np.title); } }));
   songMenu.append(new gui.MenuItem({ label: 'Mark as Instrumental', click: function() { markAsInstrumental(); } }));
   songMenu.append(new gui.MenuItem({ label: 'Web Search', click: function() { webSearch(); } }));
-  songMenu.append(new gui.MenuItem({ label: 'Current Last.FM song', click: function() { lastFmCurrentSong(); } }));
-  songMenu.append(new gui.MenuItem({ label: 'Current Spotify song', click: function() { spotifyCurrentSong(); } }));
+  // Now Playing menu
+  win.menu.insert(new gui.MenuItem({ label: 'Now Playing', submenu: npMenu }), 5);
+  var uncheckNPItems = function() {
+    for (var item of win.menu.items[5].submenu.items) {
+      item.checked = false;
+    }
+  }
+  for (var name in npProviders) {
+    npMenu.append(new gui.MenuItem({
+      type: 'checkbox',
+      checked: config.get('nowplaying.default') == name,
+      label: name,
+      click: function() {
+        console.log(this.label);
+        config.set('nowplaying.default', this.label);
+        uncheckNPItems();
+        this.checked = true;
+      }
+    }));
+  }
 }
 addMenu();

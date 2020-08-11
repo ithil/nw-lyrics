@@ -128,26 +128,6 @@ div#search input:focus {
   outline: none;
 }
 
-#iTunesNotRunning {
-  padding: 20px;
-  font-size: 33px;
-  font-family: georgia;
-  color: darkmagenta;
-  font-style: oblique;
-  background: beige;
-  border-bottom-right-radius: 40px;
-  border-top-right-radius: 5px;
-  box-shadow: 0px 0px 10px 1px beige;
-  margin-top: 13px;
-  margin-bottom: 10px;
-}
-
-#iTunesNotRunning.fullscreen {
-  background: rgba(255, 255, 255, 0.11);
-  color: #983d98;
-  box-shadow: none;
-}
-
 #NoLyricsFound {
   margin-top: 10px;
   font-family: georgia;
