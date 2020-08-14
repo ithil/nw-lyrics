@@ -480,69 +480,80 @@ var zoom = function (n) {
 
 function addMenu() {
   var alignLyrics = function (pos) { lyricsDiv.css('text-align', pos); config.set('text.align', pos); }
-  var uncheckItems = function(menuNumber) {
-    for (var item of win.menu.items[menuNumber].submenu.items) {
+  var uncheckItems = function(menu) {
+    for (var item of menu.items) {
       item.checked = false;
     }
   }
   var menubar = new gui.Menu({type: 'menubar'});
   menubar.createMacBuiltin("Lyrics");
-  var alignMenu = new gui.Menu(), zoomMenu = new gui.Menu(), songMenu = new gui.Menu(), npMenu = new gui.Menu();
+  var viewMenu = new gui.Menu(), alignMenu = new gui.Menu(), zoomMenu = new gui.Menu(), songMenu = new gui.Menu(), npMenu = new gui.Menu();
   win.menu = menubar;
-  // Align menu
-  win.menu.insert(new gui.MenuItem({ label: 'Align', submenu: alignMenu }), 2);
-  alignMenu.append(new gui.MenuItem({
-    type: 'checkbox',
-    checked: config.get('text.align') == 'left',
-    label: 'Left',
-    click: function() {
-      alignLyrics('left');
-      uncheckItems(2);
-      this.checked = true;
-    }
-  }));
-  alignMenu.append(new gui.MenuItem({
-    type: 'checkbox',
-    checked: config.get('text.align') == 'center',
-    label: 'Center',
-    click: function() {
-      alignLyrics('center');
-      uncheckItems(2);
-      this.checked = true;
-    }
-  }));
-  alignMenu.append(new gui.MenuItem({
-    type: 'checkbox',
-    checked: config.get('text.align') == 'right',
-    label: 'Right',
-    click: function() {
-      alignLyrics('right');
-      uncheckItems(2);
-      this.checked = true;
-    }
-  }));
-  // Zoom menu
-  win.menu.insert(new gui.MenuItem({ label: 'Zoom', submenu: zoomMenu }), 3);
-  zoomMenu.append(new gui.MenuItem({
-    label: 'Zoom In',
-    key: '+',
+  // View menu
+  win.menu.insert(new gui.MenuItem({ label: 'View', submenu: viewMenu }), 2);
+    // Align menu
+    viewMenu.append(new gui.MenuItem({ label: 'Align', submenu: alignMenu }));
+    alignMenu.append(new gui.MenuItem({
+      type: 'checkbox',
+      checked: config.get('text.align') == 'left',
+      label: 'Left',
+      click: function() {
+        alignLyrics('left');
+        uncheckItems(alignMenu);
+        this.checked = true;
+      }
+    }));
+    alignMenu.append(new gui.MenuItem({
+      type: 'checkbox',
+      checked: config.get('text.align') == 'center',
+      label: 'Center',
+      click: function() {
+        alignLyrics('center');
+        uncheckItems(2);
+        this.checked = true;
+      }
+    }));
+    alignMenu.append(new gui.MenuItem({
+      type: 'checkbox',
+      checked: config.get('text.align') == 'right',
+      label: 'Right',
+      click: function() {
+        alignLyrics('right');
+        uncheckItems(2);
+        this.checked = true;
+      }
+    }));
+    // Zoom menu
+    viewMenu.insert(new gui.MenuItem({ label: 'Zoom', submenu: zoomMenu }));
+    zoomMenu.append(new gui.MenuItem({
+      label: 'Zoom In',
+      key: '+',
+      modifiers: 'cmd',
+      click: function() { zoom(1); }
+    }));
+    zoomMenu.append(new gui.MenuItem({
+      label: 'Zoom Out',
+      key: '-',
+      modifiers: 'cmd',
+      click: function() { zoom(-1); }
+    }));
+    zoomMenu.append(new gui.MenuItem({
+      label: 'Reset Zoom',
+      key: '0',
+      modifiers: 'cmd',
+      click: function() { zoom(0); }
+    }));
+  viewMenu.append(new gui.MenuItem({ type: 'separator' }));
+  viewMenu.append(new gui.MenuItem({
+    label: 'Toggle Fullscreen',
+    key: 'Enter',
     modifiers: 'cmd',
-    click: function() { zoom(1); }
-  }));
-  zoomMenu.append(new gui.MenuItem({
-    label: 'Zoom Out',
-    key: '-',
-    modifiers: 'cmd',
-    click: function() { zoom(-1); }
-  }));
-  zoomMenu.append(new gui.MenuItem({
-    label: 'Reset Zoom',
-    key: '0',
-    modifiers: 'cmd',
-    click: function() { zoom(0); }
+    click: function() {
+      win.toggleFullscreen();
+    }
   }));
   // Song menu
-  win.menu.insert(new gui.MenuItem({ label: 'Song', submenu: songMenu }), 4);
+  win.menu.insert(new gui.MenuItem({ label: 'Song', submenu: songMenu }), 3);
   songMenu.append(new gui.MenuItem({ label: 'Requery Lyrics', click: function() { requeryLyrics(np.artist, np.title); } }));
   songMenu.append(new gui.MenuItem({
     label: 'Mark as Instrumental',
@@ -606,7 +617,7 @@ function addMenu() {
     }
   }));
   // Now Playing menu
-  win.menu.insert(new gui.MenuItem({ label: 'Now Playing', submenu: npMenu }), 5);
+  win.menu.insert(new gui.MenuItem({ label: 'Now Playing', submenu: npMenu }), 4);
   for (var name in npProviders) {
     npMenu.append(new gui.MenuItem({
       type: 'checkbox',
@@ -614,7 +625,7 @@ function addMenu() {
       label: name,
       click: function() {
         config.set('nowplaying.default', this.label);
-        uncheckItems(5);
+        uncheckItems(npMenu);
         this.checked = true;
       }
     }));
