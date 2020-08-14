@@ -105,6 +105,7 @@ $(document).keydown(function(evt) {
     var lyrics = lyricsDiv[0].innerText;
     applyInstrumentalCss();
     saveLyrics(np.artist, np.title, lyrics);
+    lyricsDiv.html(convertHtml(lyrics));
     return false;
   }
   if (evt.keyCode == 27) { // Escape
@@ -129,20 +130,44 @@ $(document).keydown(function(evt) {
     if (String.fromCharCode(evt.keyCode) == "R") {
       getNowPlaying();
     }
-    if (String.fromCharCode(evt.keyCode) == "D") {
+    else if (String.fromCharCode(evt.keyCode) == "D") {
       require('nw.gui').Window.get().showDevTools()
     }
-    if (String.fromCharCode(evt.keyCode) == "S") {
+    else if (String.fromCharCode(evt.keyCode) == "S") {
       toggleSearch();
     }
-    if (String.fromCharCode(evt.keyCode) == "E") {
+    else if (String.fromCharCode(evt.keyCode) == "E") {
       editMode(true);
     }
-    if (String.fromCharCode(evt.keyCode) == "F") {
+    else if (String.fromCharCode(evt.keyCode) == "F") {
       evt.preventDefault();
       $('#jumpToWord').show().focus();
     }
-    if (String.fromCharCode(evt.keyCode) == "G" && evt.shiftKey) {
+    else if (String.fromCharCode(evt.keyCode) == "J" && evt.shiftKey) {
+      // paragraphIterator.next(1).value.scrollIntoView();
+      $('html, body').animate({
+        scrollTop: getClosestElement($('#lyrics p'), 1).offsetTop
+      }, 200);
+    }
+    else if (String.fromCharCode(evt.keyCode) == "K" && evt.shiftKey) {
+      // paragraphIterator.next(-1).value.scrollIntoView();
+      $('html, body').animate({
+        scrollTop: getClosestElement($('#lyrics p'), -1).offsetTop
+      }, 200);
+    }
+    else if (String.fromCharCode(evt.keyCode) == "J") {
+      // lineIterator.next(1).value.scrollIntoView();
+      $('html, body').animate({
+        scrollTop: getClosestElement($('#lyrics .line'), 1).offsetTop
+      }, 200);
+    }
+    else if (String.fromCharCode(evt.keyCode) == "K") {
+      // lineIterator.next(-1).value.scrollIntoView();
+      $('html, body').animate({
+        scrollTop: getClosestElement($('#lyrics .line'), -1).offsetTop
+      }, 200);
+    }
+    else if (String.fromCharCode(evt.keyCode) == "G" && evt.shiftKey) {
       // Scroll to bottom
       $('html, body').animate({
         scrollTop: $(document).height()
@@ -329,10 +354,51 @@ function setCurrentTrack(artist, title) {
 
 function setLyrics(lyrics) {
   lyricsDiv.show();
-  lyricsDiv[0].innerText = lyrics; //jQuery would ignore the newlines
+  lyricsDiv.html(convertHtml(lyrics));
   noLyricsDiv.hide();
   loaderDiv.hide();
   applyInstrumentalCss();
+}
+
+function convertHtml(text) {
+  // var paragraphs = $('#lyrics')[0].innerText.split('\n\n');
+  var paragraphs = text.split('\n\n');
+  var newHtml = ''
+  for (var p of paragraphs) {
+    var newParagraph = '';
+    for (var line of p.split('\n')) {
+      newParagraph += `<span class="line">${line}</span><br>`;
+    }
+    newHtml += `<p>${newParagraph.slice(0, -4)}</p>`
+  }
+  return newHtml;
+}
+
+function getClosestElement(elements, dir) {
+  var scrollPos = document.documentElement.scrollTop;
+  var i = 0;
+  var l = elements.length;
+  while (i < l) {
+    if (scrollPos == elements[i].offsetTop) {
+      return elements[Math.min(Math.max(parseInt(i + dir), 0), l-1)];
+    }
+    else {
+      if ( dir > 0 && (
+        i === elements.length -1 ||
+        elements[i].offsetTop > scrollPos
+      )) {
+        return elements[i];
+      }
+      else if ( dir < 0 && (
+        i === elements.length -1 ||
+        ( elements[i].offsetTop < scrollPos &&
+        elements[i+1].offsetTop > scrollPos )
+      )) {
+        return elements[i];
+      }
+    }
+      i = i + 1;
+  }
 }
 
 function requeryLyrics(artist, title) {
