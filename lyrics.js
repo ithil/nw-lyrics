@@ -509,7 +509,7 @@ function addMenu() {
       label: 'Center',
       click: function() {
         alignLyrics('center');
-        uncheckItems(2);
+        uncheckItems(alignMenu);
         this.checked = true;
       }
     }));
@@ -519,7 +519,7 @@ function addMenu() {
       label: 'Right',
       click: function() {
         alignLyrics('right');
-        uncheckItems(2);
+        uncheckItems(alignMenu);
         this.checked = true;
       }
     }));
