@@ -31,7 +31,12 @@ $(document).ready(function() {
  noLyricsDiv = $('#NoLyricsFound');
  win.zoomLevel = parseInt(config.get('window.zoomLevel') || 0);
  lyricsDiv.css('text-align', config.get('text.align') || 'center');
- getNowPlaying();
+ if (nw.App.fullArgv.length > 0) {
+  handleDockDrop(nw.App.fullArgv[0]);
+ }
+ else {
+   getNowPlaying();
+ }
 });
 
 win.on('close', function(event) {
@@ -44,8 +49,9 @@ win.on('close', function(event) {
   }
 });
 app.on('reopen', function() {win.show(); win.focus()})
+app.on('open', function(droppedContent) { handleDockDrop(droppedContent); });
 
-app.on('open', function(droppedContent) {
+function handleDockDrop(droppedContent) {
   var spotifyPattern = new RegExp('open.spotify.com/track/([^?/]+)');
   var ytPattern = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
   var links = droppedContent.split(RegExp('https?://'));
@@ -71,7 +77,7 @@ app.on('open', function(droppedContent) {
       });
     }
   }
-});
+}
 
 win.on('enter-fullscreen', function() {
   $("html *").addClass('fullscreen');
