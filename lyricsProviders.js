@@ -8,37 +8,6 @@ function addLyricsProvider(name, func) {
   lyricsProviders[name] = item;
 }
 
-function lyricWikia(artist, title, callback) {
-  artist = encodeURI(artist.replace(/ /g, "_"));title = encodeURI(title.replace(/ /g, "_"));
-  request('http://lyrics.wikia.com/'+artist+':'+title, function (error, response, html) {
-    if (!error && response.statusCode == 200) {
-      var ch$ = cheerio.load(html);
-      if(ch$('.redirectText').length) {
-        arr = ch$('.redirectText a').attr('title').split(':');
-        lyricWikia(arr[0], arr[1], callback);
-        return true;
-      }
-      if(ch$('ul.categories a[title*="Unlicensed Lyrics"]').length) {
-        callback(false); // Abort if lyrics is incomplete/non-existent
-        return false;    // due to licensing issues
-      }
-      // Extracting the lyrics
-      lyricBox = ch$('div.lyricbox');
-      lyricBox.find('div.rtMatcher').remove(); // Removing ads
-      lyricBox.find('script').remove();
-      lyricBox.find('noscript').remove();
-      lyricBox.find('br').each(function(i,e) { ch$(this).replaceWith("\n")}); // Adding newlines
-      myLyrics = lyricBox.text().trim();  // Removing trailing newlines
-      callback(true, myLyrics);
-    }
-    else {
-      callback(false);
-    }
-  });
-}
-
-addLyricsProvider("LyricWikia", lyricWikia);
-
 addLyricsProvider("Genius", function(artist, title, callback) {
   ddg({query:'site:genius.com '+title+' '+artist, maxResults: 3}).then(function(results) {
     if(results.length < 1) {callback(false); return(false)}
