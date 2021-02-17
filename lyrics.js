@@ -345,12 +345,16 @@ function setCurrentTrack(artist, title) {
         if(succ) {
           //Saving lyrics
           saveLyrics(artist, title, lyrics.toString());
-          setLyrics(lyrics);
+          if (np.artist == artist && np.title == title) {
+            setLyrics(lyrics);
+          }
         }
         else {
-          setLyrics('');
-          lyricsDiv.hide();
-          noLyricsDiv.show();
+          if (np.artist == artist && np.title == title) {
+            setLyrics('');
+            lyricsDiv.hide();
+            noLyricsDiv.show();
+          }
         }
       });
     }
